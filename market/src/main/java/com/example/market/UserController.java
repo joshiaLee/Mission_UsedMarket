@@ -18,9 +18,11 @@ public class UserController {
     private final UserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
 
+    private final AuthenticationFacade authFacade;
     @GetMapping("/home")
     public String home(){
         log.info(SecurityContextHolder.getContext().getAuthentication().getName());
+        log.info(authFacade.getAuth().getName());
         return "index";
     }
 
