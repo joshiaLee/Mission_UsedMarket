@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("users")
 public class UserController {
+    // UserDetailsManager에 주입되는것은 내가 만든 JPAUserDetatilsManeger
     private final UserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
 
@@ -39,6 +40,8 @@ public class UserController {
     ){
 //        log.info(authentication.getName());
 //        log.info(((User) authentication.getPrincipal()).getPassword());
+
+        log.info(((CustomUserDetails) authentication.getPrincipal()).getUsername());
         log.info(((CustomUserDetails) authentication.getPrincipal()).getEmail());
         log.info(((CustomUserDetails) authentication.getPrincipal()).getPassword());
         log.info(((CustomUserDetails) authentication.getPrincipal()).getPhone());
@@ -60,9 +63,6 @@ public class UserController {
             String passwordCheck
     ){
         if(password.equals(passwordCheck))
-//            manager.createUser(User.withUsername(username)
-//                    .password(passwordEncoder.encode(password))
-//                    .build());
             manager.createUser(CustomUserDetails.builder()
                             .username(username)
                             .password(passwordEncoder.encode(password))

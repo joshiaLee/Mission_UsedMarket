@@ -46,7 +46,7 @@ public class JwtTokenUtils {
         Claims jwtClaims = Jwts.claims()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(30L)));
+                .setExpiration(Date.from(now.plusSeconds(24 * 60 * 60L)));
 
         return Jwts.builder()
                 .setClaims(jwtClaims)

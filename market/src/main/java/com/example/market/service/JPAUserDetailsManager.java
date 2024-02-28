@@ -64,11 +64,6 @@ public class JPAUserDetailsManager implements UserDetailsManager {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-//        UserEntity userEntity = UserEntity.builder()
-//                .username(user.getUsername())
-//                .password(user.getPassword())
-//                .build();
-//        userRepository.save(userEntity);
     }
     @Override
     public boolean userExists(String username) {
