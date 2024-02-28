@@ -10,3 +10,6 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     show-sql: true
+
+jwt:
+  secret: sakjhgdfksljbvdkbjkebwflkasjknvxckljw
