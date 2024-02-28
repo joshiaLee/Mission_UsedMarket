@@ -2,12 +2,15 @@ package com.example.market.service;
 
 import com.example.market.entity.UserEntity;
 import com.example.market.repo.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,6 +23,7 @@ import java.util.Optional;
 public class JPAUserDetailsManager implements UserDetailsManager {
     private final UserRepository userRepository;
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> optionalUser
@@ -27,7 +31,10 @@ public class JPAUserDetailsManager implements UserDetailsManager {
         if(optionalUser.isEmpty())
             throw new UsernameNotFoundException(username);
 
-        UserDetails build = User.withUsername(username).build();
+        UserDetails build = User
+                .withUsername(username)
+                .password(optionalUser.get().getPassword())
+                .build();
         return build;
     }
 

@@ -33,7 +33,7 @@ public class WebSecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                // 폼로그인이 UserDetailsManager를 사용한다.
+                // 폼로그인이 UserDetailsManager Or 구현체를 사용한다.
                 .formLogin(
                         formLogin -> formLogin
                                 .loginPage("/users/login")
@@ -44,7 +44,7 @@ public class WebSecurityConfig {
                         // 어떤 경로(URL)로 요청을 보내면 로그아웃이 되는지
                         // 즉 세션을 삭제한
                         .logoutUrl("/users/logout")
-                        .logoutSuccessUrl("/users/login"))
+                        .logoutSuccessUrl("/users/home"))
         ;
 
         return http.build();

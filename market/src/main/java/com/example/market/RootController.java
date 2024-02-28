@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RootController {
-    @GetMapping
+    @GetMapping("/home")
     public String root(){
-        return "hello";
+        return "index";
     }
 
     @GetMapping("/no-auth")
