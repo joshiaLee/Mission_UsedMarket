@@ -51,7 +51,7 @@ public class JPAUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
-        if(userExists(user.getUsername()))
+        if(this.userExists(user.getUsername()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         try{
