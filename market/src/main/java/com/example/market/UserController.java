@@ -1,5 +1,6 @@
 package com.example.market;
 
+import com.example.market.entity.CustomUserDetails;
 import com.example.market.service.JPAUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +37,11 @@ public class UserController {
     public String myProfile(
             Authentication authentication
     ){
-        log.info(authentication.getName());
-        log.info(((User) authentication.getPrincipal()).getPassword());
+//        log.info(authentication.getName());
+//        log.info(((User) authentication.getPrincipal()).getPassword());
+        log.info(((CustomUserDetails) authentication.getPrincipal()).getEmail());
+        log.info(((CustomUserDetails) authentication.getPrincipal()).getPassword());
+        log.info(((CustomUserDetails) authentication.getPrincipal()).getPhone());
         return "my-profile";
     }
 
@@ -56,8 +60,12 @@ public class UserController {
             String passwordCheck
     ){
         if(password.equals(passwordCheck))
-            manager.createUser(User.withUsername(username)
-                    .password(passwordEncoder.encode(password))
+//            manager.createUser(User.withUsername(username)
+//                    .password(passwordEncoder.encode(password))
+//                    .build());
+            manager.createUser(CustomUserDetails.builder()
+                            .username(username)
+                            .password(passwordEncoder.encode(password))
                     .build());
 
         return "redirect:/users/login";
