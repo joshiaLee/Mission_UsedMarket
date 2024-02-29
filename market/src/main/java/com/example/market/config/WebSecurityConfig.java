@@ -19,6 +19,11 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 public class WebSecurityConfig {
     private final JwtTokenUtils jwtTokenUtils;
     private final UserDetailsManager manager;
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http
@@ -40,11 +45,15 @@ public class WebSecurityConfig {
                         )
                         .anonymous()
                         .requestMatchers("/auth/user-role")
-                        .hasRole("USER")
+                        .hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/auth/admin-role")
                         .hasRole("ADMIN")
+                        .requestMatchers("/auth/read-authority")
+                        .hasAnyAuthority("READ_AUTHORITY", "WRITE_AUTHORITY")
+                        .requestMatchers("/auth/write-authority")
+                        .hasAuthority("WRITE_AUTHORITY")
                         .anyRequest()
-                        .authenticated()
+                        .permitAll()
                 )
                 // JWT를 사용하기 때문에 보안 관련 세션 해제 (STATELESS: 상태를 저장하지 않음)
                 .sessionManagement(session -> session
@@ -60,8 +69,5 @@ public class WebSecurityConfig {
 
 
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+
 }
