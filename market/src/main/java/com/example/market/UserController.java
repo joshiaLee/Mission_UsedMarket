@@ -1,12 +1,10 @@
 package com.example.market;
 
 import com.example.market.entity.CustomUserDetails;
-import com.example.market.service.JPAUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
@@ -38,9 +36,7 @@ public class UserController {
     public String myProfile(
             Authentication authentication
     ){
-//        log.info(authentication.getName());
-//        log.info(((User) authentication.getPrincipal()).getPassword());
-
+        log.info(authentication.getName());
         log.info(((CustomUserDetails) authentication.getPrincipal()).getUsername());
         log.info(((CustomUserDetails) authentication.getPrincipal()).getEmail());
         log.info(((CustomUserDetails) authentication.getPrincipal()).getPassword());

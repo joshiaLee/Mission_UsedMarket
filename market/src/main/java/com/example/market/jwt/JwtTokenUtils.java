@@ -43,6 +43,7 @@ public class JwtTokenUtils {
 
     public String generateToken(UserDetails userDetails){
         Instant now = Instant.now();
+        // jwt에 무엇을 넣을지 Map 사용 가
         Claims jwtClaims = Jwts.claims()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(Date.from(now))

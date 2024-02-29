@@ -1,6 +1,5 @@
 package com.example.market.filters;
 
-import com.example.market.entity.CustomUserDetails;
 import com.example.market.jwt.JwtTokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,7 +17,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,14 +39,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 
                 String username = jwtTokenUtils.parseClaims(token).getSubject();
+                UserDetails userDetails = manager.loadUserByUsername(username);
+                userDetails.getAuthorities().forEach(auth -> log.info(String.valueOf(auth)));
 
                 AbstractAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-//                                CustomUserDetails.builder()
-//                                        .username(username)
-//                                        .build(),
-                                manager.loadUserByUsername(username),
-                                token, new ArrayList<>()
+                                userDetails,
+                                token,
+                                userDetails.getAuthorities()
                         );
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);

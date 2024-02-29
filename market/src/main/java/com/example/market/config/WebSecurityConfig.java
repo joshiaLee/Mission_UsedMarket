@@ -29,8 +29,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users/home",
-                                "/token/issue",
-                                "/token/validate"
+                                "/token/issue"
                         )
                         .permitAll()
                         .requestMatchers("/users/my-profile")
@@ -40,8 +39,12 @@ public class WebSecurityConfig {
                                 "/users/register"
                         )
                         .anonymous()
+                        .requestMatchers("/auth/user-role")
+                        .hasRole("USER")
+                        .requestMatchers("/auth/admin-role")
+                        .hasRole("ADMIN")
                         .anyRequest()
-                        .permitAll()
+                        .authenticated()
                 )
                 // JWT를 사용하기 때문에 보안 관련 세션 해제 (STATELESS: 상태를 저장하지 않음)
                 .sessionManagement(session -> session
@@ -51,46 +54,6 @@ public class WebSecurityConfig {
                         new JwtTokenFilter(jwtTokenUtils, manager),
                         AuthorizationFilter.class
                 );
-        // JWT 이전
-        /*
-                http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        auth -> auth
-                                .requestMatchers(
-                                        "/users/home",
-                                        "/token/issue",
-                                        "/token/validate")
-                                .permitAll()
-                                .requestMatchers("/users/my-profile")
-                                .authenticated()
-                                .requestMatchers(
-                                        "/users/login",
-                                        "/users/register")
-                                .anonymous()
-                                .anyRequest()
-                                .authenticated()
-                )
-                // 폼로그인이 UserDetailsManager Or 구현체를 사용한다.
-                .formLogin(
-                        formLogin -> formLogin
-                                .loginPage("/users/login")
-                                .defaultSuccessUrl("/users/my-profile")
-                                .failureUrl("/users/login?fail")
-                )
-                .logout(logout -> logout
-                        // 어떤 경로(URL)로 요청을 보내면 로그아웃이 되는지
-                        // 즉 세션을 삭제한
-                        .logoutUrl("/users/logout")
-                        .logoutSuccessUrl("/users/home")
-                )
-                        .addFilterBefore(
-                                new JwtTokenFilter(jwtTokenUtils),
-                                AuthorizationFilter.class
-                        )
-        ;
-
-         */
 
         return http.build();
     }

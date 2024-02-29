@@ -29,20 +29,15 @@ public class JPAUserDetailsManager implements UserDetailsManager {
             throw new UsernameNotFoundException(username);
 
         UserEntity userEntity = optionalUser.get();
+
         return CustomUserDetails.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
                 .email(userEntity.getEmail())
                 .phone(userEntity.getPhone())
+                .authorities(userEntity.getAuthorities())
                 .build();
 
-
-
-//        UserDetails build = User
-//                .withUsername(username)
-//                .password(optionalUser.get().getPassword())
-//                .build();
-//        return build;
     }
 
     @Override
@@ -51,12 +46,13 @@ public class JPAUserDetailsManager implements UserDetailsManager {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         try{
-            CustomUserDetails customUserDetails = (CustomUserDetails) user;
+            CustomUserDetails customUser = (CustomUserDetails) user;
             UserEntity newUser = UserEntity.builder()
-                    .username(customUserDetails.getUsername())
-                    .password(customUserDetails.getPassword())
-                    .email(customUserDetails.getEmail())
-                    .phone(customUserDetails.getPhone())
+                    .username(customUser.getUsername())
+                    .password(customUser.getPassword())
+                    .email(customUser.getEmail())
+                    .phone(customUser.getPhone())
+                    .authorities(customUser.getRawAuthorities())
                     .build();
             userRepository.save(newUser);
         } catch (ClassCastException e){

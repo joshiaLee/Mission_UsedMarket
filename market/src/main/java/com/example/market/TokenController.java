@@ -3,7 +3,6 @@ package com.example.market;
 import com.example.market.jwt.JwtRequestDto;
 import com.example.market.jwt.JwtResponseDto;
 import com.example.market.jwt.JwtTokenUtils;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,16 +41,6 @@ public class TokenController {
 
         return response;
 
-    }
-
-    @GetMapping("/validate")
-    public Claims validateToken(
-            @RequestParam("token")
-            String token
-    ){
-        if(!jwtTokenUtils.validate(token))
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        return jwtTokenUtils.parseClaims(token);
     }
 
 }
