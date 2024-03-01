@@ -48,13 +48,14 @@ public class JPAUserDetailsManager implements UserDetailsManager {
         try{
             CustomUserDetails customUser = (CustomUserDetails) user;
             UserEntity newUser = UserEntity.builder()
-                    .login(customUser.getLogin())
+                    .username(customUser.getUsername())
                     .password(customUser.getPassword())
                     .nickname(customUser.getNickname())
-                    .username(customUser.getUsername())
+                    .name(customUser.getName())
                     .age(customUser.getAge())
                     .email(customUser.getEmail())
                     .phone(customUser.getPhone())
+                    .registrationNumber(customUser.getRegistrationNumber())
                     .authorities(customUser.getRawAuthorities())
                     .build();
             userRepository.save(newUser);
@@ -65,15 +66,30 @@ public class JPAUserDetailsManager implements UserDetailsManager {
 
     }
     @Override
-    public boolean userExists(String username) {
-        return userRepository.existsByUsername(username);
+    public boolean userExists(String login) {
+        return userRepository.existsByUsername(login);
     }
 
 
 
     @Override
     public void updateUser(UserDetails user) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        UserEntity updateEntity = userRepository.findByUsername(user.getUsername()).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username: " + user.getUsername()));
+
+        CustomUserDetails customUser = (CustomUserDetails) user;
+
+        // username 은 unique 이기 때문에 바꿀수 없다.
+        updateEntity.setPassword(customUser.getPassword());
+        updateEntity.setNickname(customUser.getNickname());
+        updateEntity.setName(customUser.getName());
+        updateEntity.setAge(customUser.getAge());
+        updateEntity.setEmail(customUser.getEmail());
+        updateEntity.setPhone(customUser.getPhone());
+        updateEntity.setRegistrationNumber(customUser.getRegistrationNumber());
+        updateEntity.setAuthorities(customUser.getRawAuthorities());
+
+        userRepository.save(updateEntity);
     }
 
     @Override

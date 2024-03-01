@@ -1,9 +1,6 @@
 package com.example.market.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,21 +16,28 @@ public class CustomUserDetails implements UserDetails {
     @Getter
     private Long id;
 
-    @Getter
-    private String login;
+    private String username;
+
     private String password;
     @Getter
+    @Setter
     private String nickname;
-    private String username;
     @Getter
+    @Setter
+    private String name;
+    @Getter
+    @Setter
     private Integer age;
     @Getter
+    @Setter
     private String email;
     @Getter
+    @Setter
     private String phone;
     @Getter
     private Long registrationNumber;
 
+    @Setter
     private String authorities;
 
     public String getRawAuthorities() {

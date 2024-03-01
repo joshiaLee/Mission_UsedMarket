@@ -45,6 +45,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/articles")
                         .authenticated()
 
+                        .requestMatchers("/users/add-info")
+                        .hasRole("UNACTIVATED")
                         .requestMatchers("/users/my-profile")
                         .authenticated()
                         .requestMatchers(

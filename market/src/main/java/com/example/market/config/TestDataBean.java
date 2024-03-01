@@ -13,10 +13,10 @@ public class TestDataBean {
             PasswordEncoder passwordEncoder
     ){
         manager.createUser(CustomUserDetails.builder()
-                        .login("user")
+                        .username("user")
                         .password(passwordEncoder.encode("password"))
                         .nickname("짱구")
-                        .username("user")
+                        .name("user")
                         .age(18)
                         .email("user@gmail.com")
                         .phone("01012345678")
@@ -24,10 +24,10 @@ public class TestDataBean {
                         .build());
 
         manager.createUser(CustomUserDetails.builder()
-                .login("admin")
+                .username("admin")
                 .password(passwordEncoder.encode("password"))
                 .nickname("철수")
-                .username("admin")
+                .name("admin")
                 .age(28)
                 .email("hhhjs0133@gmail.com")
                 .phone("01079334262")

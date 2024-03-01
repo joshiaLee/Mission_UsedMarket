@@ -3,6 +3,7 @@ package com.example.market.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "image_entity")
 public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
