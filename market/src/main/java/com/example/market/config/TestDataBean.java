@@ -13,19 +13,25 @@ public class TestDataBean {
             PasswordEncoder passwordEncoder
     ){
         manager.createUser(CustomUserDetails.builder()
-                        .username("user")
+                        .login("user")
                         .password(passwordEncoder.encode("password"))
+                        .nickname("짱구")
+                        .username("user")
+                        .age(18)
                         .email("user@gmail.com")
                         .phone("01012345678")
-                        .authorities("ROLE_USER,READ_AUTHORITY")
+                        .authorities("ROLE_USER")
                         .build());
 
         manager.createUser(CustomUserDetails.builder()
-                .username("admin")
+                .login("admin")
                 .password(passwordEncoder.encode("password"))
-                .email("admin@gmail.com")
+                .nickname("철수")
+                .username("admin")
+                .age(28)
+                .email("hhhjs0133@gmail.com")
                 .phone("01079334262")
-                .authorities("ROLE_ADMIN,ROLE_USER,WRITE_AUTHORITY,READ_AUTHORITY")
+                .authorities("ROLE_ADMIN")
                 .build());
     }
 }

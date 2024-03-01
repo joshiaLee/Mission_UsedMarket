@@ -48,8 +48,11 @@ public class JPAUserDetailsManager implements UserDetailsManager {
         try{
             CustomUserDetails customUser = (CustomUserDetails) user;
             UserEntity newUser = UserEntity.builder()
-                    .username(customUser.getUsername())
+                    .login(customUser.getLogin())
                     .password(customUser.getPassword())
+                    .nickname(customUser.getNickname())
+                    .username(customUser.getUsername())
+                    .age(customUser.getAge())
                     .email(customUser.getEmail())
                     .phone(customUser.getPhone())
                     .authorities(customUser.getRawAuthorities())

@@ -18,12 +18,21 @@ import java.util.stream.Collectors;
 public class CustomUserDetails implements UserDetails {
     @Getter
     private Long id;
-    private String username;
+
+    @Getter
+    private String login;
     private String password;
+    @Getter
+    private String nickname;
+    private String username;
+    @Getter
+    private Integer age;
     @Getter
     private String email;
     @Getter
     private String phone;
+    @Getter
+    private Long registrationNumber;
 
     private String authorities;
 
