@@ -4,19 +4,18 @@ import jakarta.persistence.*;
 import lombok.Setter;
 
 @Entity
-@Table(name = "image_entity")
 public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "user_table_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "users_id")
     private UserEntity userEntity;
 
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -30,8 +29,9 @@ public class ImageEntity {
         this.storeFileName = storeFileName;
         if(objectEntity instanceof UserEntity)
             this.userEntity = (UserEntity) objectEntity;
-        if(objectEntity instanceof Item)
+        if(objectEntity instanceof Item) {
             this.item = (Item) objectEntity;
+        }
     }
 
 }

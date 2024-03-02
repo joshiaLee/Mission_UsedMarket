@@ -179,7 +179,7 @@ public class UserController {
 
     @PostMapping("/add-item")
     public String addItem(
-            MultipartFile file,
+            MultipartFile[] files,
             @ModelAttribute
             ItemDto itemDto,
             Authentication authentication
@@ -196,9 +196,11 @@ public class UserController {
 
         itemRepository.save(item);
 
-        if (file != null && !file.isEmpty()) {
-            ImageEntity imageEntity = AssociatedImage(item, file);
-            imageRepository.save(imageEntity);
+        if (files != null && files.length > 0){
+            for(MultipartFile file: files) {
+                ImageEntity imageEntity = AssociatedImage(item, file);
+                imageRepository.save(imageEntity);
+            }
         }
 
         return "redirect:/users/home";

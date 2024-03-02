@@ -4,6 +4,9 @@ import com.example.market.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Builder
 @Entity
@@ -25,9 +28,13 @@ public class Item {
     private String status;
 
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "user_table_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "users_id")
     private UserEntity userEntity;
+
+    @Setter
+    @OneToMany(mappedBy = "item", orphanRemoval = true)
+    private List<ImageEntity> imageEntities = new ArrayList<>();
 
 
     public static Item fromDto(ItemDto itemDto){

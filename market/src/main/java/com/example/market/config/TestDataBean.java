@@ -60,5 +60,11 @@ public class TestDataBean {
                 .registrationNumber("12345")
                 .status("Proceeding")
                 .build());
+
+        service.createUser(UserEntity.builder()
+                .username("비활성")
+                .password(passwordEncoder.encode("password"))
+                .authorities("ROLE_UNACTIVATED")
+                .build());
     }
 }

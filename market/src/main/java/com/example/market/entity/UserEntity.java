@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Builder
 @Entity
-@Table(name = "user_table")
+@Table(name = "users_id")
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity {

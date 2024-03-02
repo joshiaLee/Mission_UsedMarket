@@ -12,7 +12,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
@@ -52,7 +51,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/users/add-image")
                         .hasAnyRole("UNACTIVATED", "USER")
                         // 사업자 등록 신청
-                        .requestMatchers("/users/apply", "/users/add-item")
+                        .requestMatchers("/users/apply", "/users/add-item", "/users/my-items")
                         .hasRole("USER")
                         // 내 프로필 확인
                         .requestMatchers("/users/my-profile")
@@ -62,12 +61,16 @@ public class WebSecurityConfig {
                                 "/users/login",
                                 "/users/register"
                         )
+                        // 로그인 안한 사용자만 가능
                         .anonymous()
-                        .requestMatchers("/auth/user-role")
-                        .hasAnyRole("USER", "ADMIN")
+                        // 비활성화 사용자 제외 모두 이용 가능 서비스
+                        .requestMatchers("/auth/user-role", "/users/item-list", "/users/delete-item/{item_id}")
+                        .hasAnyRole("USER", "ADMIN", "CEO")
                         // 관리자 권한(사업자 목록 확인, 승인, 거절)
                         .requestMatchers("/auth/admin-role", "/admin/apply-list", "/admin/apply-admit/{id}", "/admin/apply-reject/{id}")
                         .hasRole("ADMIN")
+
+                        // 권한 파트
                         .requestMatchers("/auth/read-authority")
                         .hasAnyAuthority("READ_AUTHORITY", "WRITE_AUTHORITY")
                         .requestMatchers("/auth/write-authority")

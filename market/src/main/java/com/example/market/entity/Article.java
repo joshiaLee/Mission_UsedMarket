@@ -19,6 +19,6 @@ public class Article {
     private String content;
 
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity writer;
 }

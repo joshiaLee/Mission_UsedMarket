@@ -16,7 +16,6 @@ public class ItemDto {
     private Integer price;
     private String status;
 
-    private Long user_id;
 
     public static ItemDto fromEntity(Item item){
         return ItemDto.builder()
@@ -25,7 +24,6 @@ public class ItemDto {
                 .content(item.getContent())
                 .price(item.getPrice())
                 .status(item.getStatus())
-                .user_id(item.getUserEntity().getId())
                 .build();
     }
 
