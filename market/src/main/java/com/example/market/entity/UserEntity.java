@@ -1,10 +1,8 @@
 package com.example.market.entity;
 
+import com.example.market.dto.CustomUserDetails;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Getter
@@ -43,8 +41,6 @@ public class UserEntity {
     @Setter
     private String authorities;
 
-    @OneToMany(mappedBy = "userEntity")
-    private List<ImageEntity> imageEntityList = new ArrayList<>();
 
     public static UserEntity fromCustomUserDetails(CustomUserDetails customUser) {
         return UserEntity.builder()

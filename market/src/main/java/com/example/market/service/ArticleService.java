@@ -1,8 +1,8 @@
-package com.example.market.article;
+package com.example.market.service;
 
-import com.example.market.article.dto.ArticleDto;
-import com.example.market.article.entity.Article;
-import com.example.market.article.repo.ArticleRepository;
+import com.example.market.dto.ArticleDto;
+import com.example.market.entity.Article;
+import com.example.market.repo.ArticleRepository;
 import com.example.market.entity.UserEntity;
 import com.example.market.repo.UserRepository;
 import lombok.RequiredArgsConstructor;

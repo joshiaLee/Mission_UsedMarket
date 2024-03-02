@@ -1,7 +1,7 @@
 package com.example.market.controller;
 
-import com.example.market.article.dto.UserDto;
-import com.example.market.entity.CustomUserDetails;
+import com.example.market.dto.UserDto;
+import com.example.market.dto.CustomUserDetails;
 import com.example.market.entity.UserEntity;
 import com.example.market.service.JPAUserDetailsManager;
 import lombok.RequiredArgsConstructor;

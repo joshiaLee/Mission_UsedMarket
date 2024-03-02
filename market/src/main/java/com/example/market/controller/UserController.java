@@ -1,8 +1,8 @@
 package com.example.market.controller;
 
-import com.example.market.AuthenticationFacade;
-import com.example.market.article.dto.UserDto;
-import com.example.market.entity.CustomUserDetails;
+import com.example.market.facade.AuthenticationFacade;
+import com.example.market.dto.UserDto;
+import com.example.market.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,8 +24,8 @@ public class UserController {
     // UserDetailsManager에 주입되는것은 내가 만든 JPAUserDetatilsManeger
     private final UserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
-
     private final AuthenticationFacade authFacade;
+
     @GetMapping("/home")
     public String home(){
         log.info(SecurityContextHolder.getContext().getAuthentication().getName());

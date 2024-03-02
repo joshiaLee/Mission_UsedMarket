@@ -1,5 +1,6 @@
-package com.example.market.entity;
+package com.example.market.dto;
 
+import com.example.market.entity.UserEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

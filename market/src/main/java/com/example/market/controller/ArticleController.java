@@ -1,6 +1,7 @@
-package com.example.market.article;
+package com.example.market.controller;
 
-import com.example.market.article.dto.ArticleDto;
+import com.example.market.service.ArticleService;
+import com.example.market.dto.ArticleDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

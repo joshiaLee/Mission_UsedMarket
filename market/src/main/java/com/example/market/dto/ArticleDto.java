@@ -1,6 +1,6 @@
-package com.example.market.article.dto;
+package com.example.market.dto;
 
-import com.example.market.article.entity.Article;
+import com.example.market.entity.Article;
 import lombok.*;
 
 @Getter

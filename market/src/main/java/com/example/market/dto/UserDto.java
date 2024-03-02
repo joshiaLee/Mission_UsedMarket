@@ -1,4 +1,4 @@
-package com.example.market.article.dto;
+package com.example.market.dto;
 
 import com.example.market.entity.UserEntity;
 import lombok.*;

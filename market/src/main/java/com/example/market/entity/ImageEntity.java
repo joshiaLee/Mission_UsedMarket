@@ -13,4 +13,8 @@ public class ImageEntity {
     @JoinColumn(name = "user_table_id")
     private UserEntity userEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+
 }

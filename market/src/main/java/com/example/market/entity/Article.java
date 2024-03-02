@@ -1,6 +1,5 @@
-package com.example.market.article.entity;
+package com.example.market.entity;
 
-import com.example.market.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

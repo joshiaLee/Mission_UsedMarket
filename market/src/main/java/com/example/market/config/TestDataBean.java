@@ -1,6 +1,6 @@
 package com.example.market.config;
 
-import com.example.market.entity.CustomUserDetails;
+import com.example.market.dto.CustomUserDetails;
 import com.example.market.service.JPAUserDetailsManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
