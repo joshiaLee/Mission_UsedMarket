@@ -58,7 +58,7 @@ public class WebSecurityConfig {
                         .anonymous()
                         .requestMatchers("/auth/user-role")
                         .hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/auth/admin-role")
+                        .requestMatchers("/auth/admin-role", "/admin/apply-list")
                         .hasRole("ADMIN")
                         .requestMatchers("/auth/read-authority")
                         .hasAnyAuthority("READ_AUTHORITY", "WRITE_AUTHORITY")

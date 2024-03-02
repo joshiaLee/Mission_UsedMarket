@@ -1,5 +1,6 @@
 package com.example.market.article.dto;
 
+import com.example.market.entity.UserEntity;
 import lombok.*;
 
 @Getter
@@ -9,6 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 public class UserDto {
     // 필수 정보
+    private Long id;
+
     private String username;
 
     private String password;
@@ -24,6 +27,24 @@ public class UserDto {
     private String phone;
 
     private String registrationNumber;
+
+    private String status;
+    private String authorities;
+
+    public static UserDto fromEntity(UserEntity userEntity){
+        return UserDto.builder()
+                .id(userEntity.getId())
+                .username(userEntity.getUsername())
+                .nickname(userEntity.getNickname())
+                .name(userEntity.getName())
+                .age(userEntity.getAge())
+                .email(userEntity.getEmail())
+                .phone(userEntity.getPhone())
+                .registrationNumber(userEntity.getRegistrationNumber())
+                .status(userEntity.getStatus())
+                .authorities(userEntity.getAuthorities())
+                .build();
+    }
 
 
 }

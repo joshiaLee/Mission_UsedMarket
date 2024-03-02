@@ -1,5 +1,6 @@
 package com.example.market.service;
 
+import com.example.market.article.dto.UserDto;
 import com.example.market.entity.CustomUserDetails;
 import com.example.market.entity.UserEntity;
 import com.example.market.repo.UserRepository;
@@ -11,6 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,6 +63,15 @@ public class JPAUserDetailsManager implements UserDetailsManager {
         UserEntity.setUserEntity(updateEntity, customUser);
 
         userRepository.save(updateEntity);
+    }
+
+    public List<UserDto> userEntitySearchByAuthoritiesAndStatus(String authorities, String status){
+        List<UserEntity> userEntityList = userRepository.findByAuthoritiesAndStatus(authorities, status);
+
+        return userEntityList.stream()
+                .map(UserDto::fromEntity)
+                .collect(Collectors.toList());
+
     }
 
     @Override
