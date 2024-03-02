@@ -2,13 +2,13 @@ package com.example.market;
 
 import com.example.market.article.dto.UserDto;
 import com.example.market.entity.CustomUserDetails;
-import com.example.market.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
@@ -106,6 +106,28 @@ public class UserController {
         customUserDetails.setAuthorities("ROLE_USER");
 
 
+
+        manager.updateUser(customUserDetails);
+
+        return "redirect:/users/home";
+    }
+
+    @PostMapping("/apply")
+    public String apply(
+        @RequestBody
+        UserDto userDto,
+        Authentication authentication
+    ){
+       if(!StringUtils.isNotBlank(userDto.getRegistrationNumber())) {
+           log.info("데이터 오류");
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 사업자 번호");
+       }
+
+        // DB 에서 꺼내와야함 (update) 내역이 반영이 안됐음
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        CustomUserDetails customUserDetails = (CustomUserDetails) manager.loadUserByUsername(username);
+        customUserDetails.setRegistrationNumber(userDto.getRegistrationNumber());
+        customUserDetails.setStatus("Proceeding");
 
         manager.updateUser(customUserDetails);
 

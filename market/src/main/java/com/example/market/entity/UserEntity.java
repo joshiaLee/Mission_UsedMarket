@@ -35,11 +35,41 @@ public class UserEntity {
     private String phone;
 
     @Setter
-    private Long registrationNumber;
+    private String registrationNumber;
+
+    @Setter
+    private String status;
 
     @Setter
     private String authorities;
 
     @OneToMany(mappedBy = "userEntity")
     private List<ImageEntity> imageEntityList = new ArrayList<>();
+
+    public static UserEntity fromCustomUserDetails(CustomUserDetails customUser) {
+        return UserEntity.builder()
+                .username(customUser.getUsername())
+                .password(customUser.getPassword())
+                .nickname(customUser.getNickname())
+                .name(customUser.getName())
+                .age(customUser.getAge())
+                .email(customUser.getEmail())
+                .phone(customUser.getPhone())
+                .registrationNumber(customUser.getRegistrationNumber())
+                .status(customUser.getStatus())
+                .authorities(customUser.getRawAuthorities())
+                .build();
+    }
+
+    public static void setUserEntity(UserEntity updateEntity, CustomUserDetails customUser) {
+        updateEntity.setPassword(customUser.getPassword());
+        updateEntity.setNickname(customUser.getNickname());
+        updateEntity.setName(customUser.getName());
+        updateEntity.setAge(customUser.getAge());
+        updateEntity.setEmail(customUser.getEmail());
+        updateEntity.setPhone(customUser.getPhone());
+        updateEntity.setRegistrationNumber(customUser.getRegistrationNumber());
+        updateEntity.setStatus(customUser.getStatus());
+        updateEntity.setAuthorities(customUser.getRawAuthorities());
+    }
 }

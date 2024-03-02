@@ -34,11 +34,32 @@ public class CustomUserDetails implements UserDetails {
     @Getter
     @Setter
     private String phone;
+    @Setter
     @Getter
-    private Long registrationNumber;
+    private String registrationNumber;
+
+    @Setter
+    @Getter
+    private String status;
 
     @Setter
     private String authorities;
+
+    public static CustomUserDetails fromUserEntity(UserEntity userEntity){
+        return CustomUserDetails.builder()
+                .id(userEntity.getId())
+                .username(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .nickname(userEntity.getNickname())
+                .name(userEntity.getName())
+                .age(userEntity.getAge())
+                .email(userEntity.getEmail())
+                .phone(userEntity.getPhone())
+                .registrationNumber(userEntity.getRegistrationNumber())
+                .status(userEntity.getStatus())
+                .authorities(userEntity.getAuthorities())
+                .build();
+    }
 
     public String getRawAuthorities() {
         return this.authorities;

@@ -12,8 +12,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -23,20 +21,10 @@ public class JPAUserDetailsManager implements UserDetailsManager {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> optionalUser
-                = userRepository.findByUsername(username);
-        if(optionalUser.isEmpty())
-            throw new UsernameNotFoundException(username);
+        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException(username));
 
-        UserEntity userEntity = optionalUser.get();
-
-        return CustomUserDetails.builder()
-                .username(userEntity.getUsername())
-                .password(userEntity.getPassword())
-                .email(userEntity.getEmail())
-                .phone(userEntity.getPhone())
-                .authorities(userEntity.getAuthorities())
-                .build();
+        return CustomUserDetails.fromUserEntity(userEntity);
 
     }
 
@@ -46,18 +34,7 @@ public class JPAUserDetailsManager implements UserDetailsManager {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         try{
-            CustomUserDetails customUser = (CustomUserDetails) user;
-            UserEntity newUser = UserEntity.builder()
-                    .username(customUser.getUsername())
-                    .password(customUser.getPassword())
-                    .nickname(customUser.getNickname())
-                    .name(customUser.getName())
-                    .age(customUser.getAge())
-                    .email(customUser.getEmail())
-                    .phone(customUser.getPhone())
-                    .registrationNumber(customUser.getRegistrationNumber())
-                    .authorities(customUser.getRawAuthorities())
-                    .build();
+            UserEntity newUser = UserEntity.fromCustomUserDetails((CustomUserDetails) user);
             userRepository.save(newUser);
         } catch (ClassCastException e){
             log.error("Failed Cast to: {}", CustomUserDetails.class);
@@ -66,8 +43,8 @@ public class JPAUserDetailsManager implements UserDetailsManager {
 
     }
     @Override
-    public boolean userExists(String login) {
-        return userRepository.existsByUsername(login);
+    public boolean userExists(String username) {
+        return userRepository.existsByUsername(username);
     }
 
 
@@ -79,15 +56,7 @@ public class JPAUserDetailsManager implements UserDetailsManager {
 
         CustomUserDetails customUser = (CustomUserDetails) user;
 
-        // username 은 unique 이기 때문에 바꿀수 없다.
-        updateEntity.setPassword(customUser.getPassword());
-        updateEntity.setNickname(customUser.getNickname());
-        updateEntity.setName(customUser.getName());
-        updateEntity.setAge(customUser.getAge());
-        updateEntity.setEmail(customUser.getEmail());
-        updateEntity.setPhone(customUser.getPhone());
-        updateEntity.setRegistrationNumber(customUser.getRegistrationNumber());
-        updateEntity.setAuthorities(customUser.getRawAuthorities());
+        UserEntity.setUserEntity(updateEntity, customUser);
 
         userRepository.save(updateEntity);
     }

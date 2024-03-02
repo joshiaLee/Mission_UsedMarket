@@ -47,6 +47,8 @@ public class WebSecurityConfig {
 
                         .requestMatchers("/users/add-info")
                         .hasRole("UNACTIVATED")
+                        .requestMatchers("/users/apply")
+                        .hasRole("USER")
                         .requestMatchers("/users/my-profile")
                         .authenticated()
                         .requestMatchers(
