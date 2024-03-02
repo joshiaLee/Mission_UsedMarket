@@ -1,5 +1,6 @@
-package com.example.market;
+package com.example.market.controller;
 
+import com.example.market.AuthenticationFacade;
 import com.example.market.article.dto.UserDto;
 import com.example.market.entity.CustomUserDetails;
 import lombok.RequiredArgsConstructor;

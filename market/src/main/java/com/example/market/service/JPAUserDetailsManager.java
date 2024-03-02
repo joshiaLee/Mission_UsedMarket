@@ -4,6 +4,7 @@ import com.example.market.article.dto.UserDto;
 import com.example.market.entity.CustomUserDetails;
 import com.example.market.entity.UserEntity;
 import com.example.market.repo.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,10 @@ import java.util.stream.Collectors;
 public class JPAUserDetailsManager implements UserDetailsManager {
     private final UserRepository userRepository;
 
+    public UserEntity searchById(Long id){
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User not found with id: " + id));
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
