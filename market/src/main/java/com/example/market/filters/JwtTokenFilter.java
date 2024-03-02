@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,7 +23,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenUtils jwtTokenUtils;
-    private final UserDetailsManager manager;
+    // 내가 만든 JPAUserDetailsService 구현체가 주입
+    private final UserDetailsService service;
+
+
 
     @Override
     protected void doFilterInternal(
@@ -39,7 +43,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 
                 String username = jwtTokenUtils.parseClaims(token).getSubject();
-                UserDetails userDetails = manager.loadUserByUsername(username);
+                UserDetails userDetails = service.loadUserByUsername(username);
                 userDetails.getAuthorities().forEach(auth -> log.info(String.valueOf(auth)));
 
                 AbstractAuthenticationToken authentication =

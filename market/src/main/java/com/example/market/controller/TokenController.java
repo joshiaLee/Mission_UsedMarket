@@ -3,12 +3,12 @@ package com.example.market.controller;
 import com.example.market.jwt.JwtRequestDto;
 import com.example.market.jwt.JwtResponseDto;
 import com.example.market.jwt.JwtTokenUtils;
+import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class TokenController {
     private final JwtTokenUtils jwtTokenUtils;
-    private final UserDetailsManager manager;
+    private final UserService service;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/issue")
@@ -26,10 +26,10 @@ public class TokenController {
             @RequestBody
             JwtRequestDto dto
     ){
-        if (!manager.userExists(dto.getUsername()))
+        if (!service.userExists(dto.getUsername()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
-        UserDetails userDetails = manager.loadUserByUsername(dto.getUsername());
+        UserDetails userDetails = service.loadUserByUsername(dto.getUsername());
 
         if(!passwordEncoder
                 .matches(dto.getPassword(), userDetails.getPassword()))

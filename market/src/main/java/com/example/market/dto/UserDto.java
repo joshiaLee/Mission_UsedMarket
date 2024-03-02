@@ -4,6 +4,7 @@ import com.example.market.entity.UserEntity;
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @ToString
 @NoArgsConstructor

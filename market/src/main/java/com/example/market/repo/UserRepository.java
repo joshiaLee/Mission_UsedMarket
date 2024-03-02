@@ -13,5 +13,4 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     List<UserEntity> findByAuthoritiesAndStatus(String authorities, String status);
 
-    Optional<UserEntity> findById(Long id);
 }

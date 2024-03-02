@@ -1,7 +1,7 @@
 package com.example.market.config;
 
-import com.example.market.dto.CustomUserDetails;
-import com.example.market.service.JPAUserDetailsManager;
+import com.example.market.entity.UserEntity;
+import com.example.market.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component;
 public class TestDataBean {
 
     public TestDataBean(
-            JPAUserDetailsManager manager,
+            UserService service,
             PasswordEncoder passwordEncoder
     ){
-        manager.createUser(CustomUserDetails.builder()
+
+        service.createUser(UserEntity.builder()
                         .username("user")
                         .password(passwordEncoder.encode("password"))
                         .nickname("짱구")
@@ -23,7 +24,7 @@ public class TestDataBean {
                         .authorities("ROLE_USER")
                         .build());
 
-        manager.createUser(CustomUserDetails.builder()
+        service.createUser(UserEntity.builder()
                 .username("admin")
                 .password(passwordEncoder.encode("password"))
                 .nickname("철수")
@@ -34,7 +35,7 @@ public class TestDataBean {
                 .authorities("ROLE_ADMIN")
                 .build());
 
-        manager.createUser(CustomUserDetails.builder()
+        service.createUser(UserEntity.builder()
                 .username("이강선")
                 .password(passwordEncoder.encode("password"))
                 .nickname("강마에")
@@ -47,7 +48,7 @@ public class TestDataBean {
                 .status("Proceeding")
                 .build());
 
-        manager.createUser(CustomUserDetails.builder()
+        service.createUser(UserEntity.builder()
                 .username("당근")
                 .password(passwordEncoder.encode("password"))
                 .nickname("당근당근")

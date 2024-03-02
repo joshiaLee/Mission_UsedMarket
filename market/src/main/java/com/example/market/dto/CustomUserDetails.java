@@ -1,6 +1,5 @@
 package com.example.market.dto;
 
-import com.example.market.entity.UserEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,25 +45,6 @@ public class CustomUserDetails implements UserDetails {
     @Setter
     private String authorities;
 
-    public static CustomUserDetails fromUserEntity(UserEntity userEntity){
-        return CustomUserDetails.builder()
-                .id(userEntity.getId())
-                .username(userEntity.getUsername())
-                .password(userEntity.getPassword())
-                .nickname(userEntity.getNickname())
-                .name(userEntity.getName())
-                .age(userEntity.getAge())
-                .email(userEntity.getEmail())
-                .phone(userEntity.getPhone())
-                .registrationNumber(userEntity.getRegistrationNumber())
-                .status(userEntity.getStatus())
-                .authorities(userEntity.getAuthorities())
-                .build();
-    }
-
-    public String getRawAuthorities() {
-        return this.authorities;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -19,7 +20,7 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtTokenUtils jwtTokenUtils;
-    private final UserDetailsManager manager;
+    private final UserDetailsService service;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -44,13 +45,19 @@ public class WebSecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/articles")
                         .authenticated()
-
+                        // 추가정보 등록
                         .requestMatchers("/users/add-info")
                         .hasRole("UNACTIVATED")
-                        .requestMatchers("/users/apply")
+                        // 이미지 등록
+                        .requestMatchers("/users/add-image")
+                        .hasAnyRole("UNACTIVATED", "USER")
+                        // 사업자 등록 신청
+                        .requestMatchers("/users/apply", "/users/add-item")
                         .hasRole("USER")
+                        // 내 프로필 확인
                         .requestMatchers("/users/my-profile")
                         .authenticated()
+                        // 로그인 화면, 회원가입
                         .requestMatchers(
                                 "/users/login",
                                 "/users/register"
@@ -58,6 +65,7 @@ public class WebSecurityConfig {
                         .anonymous()
                         .requestMatchers("/auth/user-role")
                         .hasAnyRole("USER", "ADMIN")
+                        // 관리자 권한(사업자 목록 확인, 승인, 거절)
                         .requestMatchers("/auth/admin-role", "/admin/apply-list", "/admin/apply-admit/{id}", "/admin/apply-reject/{id}")
                         .hasRole("ADMIN")
                         .requestMatchers("/auth/read-authority")
@@ -67,12 +75,12 @@ public class WebSecurityConfig {
                         .anyRequest()
                         .permitAll()
                 )
-                // JWT를 사용하기 때문에 보안 관련 세션 해제 (STATELESS: 상태를 저장하지 않음)
+                // JWT 사용하기 때문에 보안 관련 세션 해제 (STATELESS: 상태를 저장하지 않음)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(
-                        new JwtTokenFilter(jwtTokenUtils, manager),
+                        new JwtTokenFilter(jwtTokenUtils, service),
                         AuthorizationFilter.class
                 );
 

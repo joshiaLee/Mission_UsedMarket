@@ -1,6 +1,6 @@
 package com.example.market.entity;
 
-import com.example.market.dto.CustomUserDetails;
+import com.example.market.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,30 +42,21 @@ public class UserEntity {
     private String authorities;
 
 
-    public static UserEntity fromCustomUserDetails(CustomUserDetails customUser) {
-        return UserEntity.builder()
-                .username(customUser.getUsername())
-                .password(customUser.getPassword())
-                .nickname(customUser.getNickname())
-                .name(customUser.getName())
-                .age(customUser.getAge())
-                .email(customUser.getEmail())
-                .phone(customUser.getPhone())
-                .registrationNumber(customUser.getRegistrationNumber())
-                .status(customUser.getStatus())
-                .authorities(customUser.getRawAuthorities())
+
+    public static UserEntity fromUserDto(UserDto userDto) {
+        return com.example.market.entity.UserEntity.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .nickname(userDto.getNickname())
+                .name(userDto.getName())
+                .age(userDto.getAge())
+                .email(userDto.getEmail())
+                .phone(userDto.getPhone())
+                .registrationNumber(userDto.getRegistrationNumber())
+                .status(userDto.getStatus())
+                .authorities(userDto.getAuthorities())
                 .build();
     }
 
-    public static void setUserEntity(UserEntity updateEntity, CustomUserDetails customUser) {
-        updateEntity.setPassword(customUser.getPassword());
-        updateEntity.setNickname(customUser.getNickname());
-        updateEntity.setName(customUser.getName());
-        updateEntity.setAge(customUser.getAge());
-        updateEntity.setEmail(customUser.getEmail());
-        updateEntity.setPhone(customUser.getPhone());
-        updateEntity.setRegistrationNumber(customUser.getRegistrationNumber());
-        updateEntity.setStatus(customUser.getStatus());
-        updateEntity.setAuthorities(customUser.getRawAuthorities());
-    }
+
 }
