@@ -61,7 +61,7 @@ public class ItemController {
             }
         }
 
-        return "redirect:/users/home";
+        return "ok";
     }
 
 
@@ -83,14 +83,9 @@ public class ItemController {
             @PathVariable("item_id")
             Long item_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
-
         Item item = itemService.searchById(item_id);
 
-        // 어드민이 아닌데 접속자의 id 와 아이템의 주인의 id 가 다르다면 FORBIDDEN
-        if(!userEntity.getAuthorities().equals("ROLE_ADMIN") && item.getUserEntity().getId() != userEntity.getId())
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        checkUserAuthorizationForItem(item);
 
         itemService.deleteItem(item_id);
 
@@ -103,14 +98,9 @@ public class ItemController {
             @PathVariable("item_id")
             Long item_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
-
         Item item = itemService.searchById(item_id);
 
-        if(!userEntity.getAuthorities().equals("ROLE_ADMIN") && item.getUserEntity().getId() != userEntity.getId())
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-
+        checkUserAuthorizationForItem(item);
 
 
         ItemDto itemDto = ItemDto.fromEntity(item);
@@ -122,8 +112,64 @@ public class ItemController {
 
 
 
-//    @PutMapping("/update-item/{item_id}")
+    @PutMapping("/update-item/{item_id}")
+    public ItemDto updateItem(
+            @PathVariable("item_id")
+            Long item_id,
+            MultipartFile[] files,
+            @ModelAttribute
+            ItemDto itemDto
+    ) throws IOException {
+        Item item = itemService.searchById(item_id);
 
+        checkUserAuthorizationForItem(item);
+
+        item.setName(itemDto.getName());
+        item.setContent(itemDto.getContent());
+        item.setPrice(itemDto.getPrice());
+
+        itemService.join(item);
+
+        if (files != null && files.length > 0){
+            for(MultipartFile file: files) {
+                ImageEntity imageEntity = ImageFacade.AssociatedImage(item, file);
+                imageRepository.save(imageEntity);
+            }
+        }
+
+        return ItemDto.fromEntity(item);
+    }
+
+    @DeleteMapping("/delete-item-image/{image_id}")
+    public String deleteItemImage(
+            @PathVariable("image_id")
+            Long image_id
+    ){
+        ImageEntity imageEntity = imageRepository.findById(image_id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 이미지가 없습니다.")
+        );
+
+        Item item = imageEntity.getItem();
+
+        checkUserAuthorizationForItem(item);
+
+        imageRepository.deleteById(image_id);
+
+        return "image successfully deleted";
+    }
+
+
+
+
+    // 어드민이 아닌데 삭제를 할경우 아이템의 주인 인지 확인
+    private void checkUserAuthorizationForItem(Item item) {
+        String username = authFacade.getAuth().getName();
+        UserEntity userEntity = service.searchByUsername(username);
+
+
+        if(!userEntity.getAuthorities().equals("ROLE_ADMIN") && item.getUserEntity().getId() != userEntity.getId())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+    }
 
 
 }
