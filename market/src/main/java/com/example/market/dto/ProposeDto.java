@@ -11,17 +11,17 @@ import lombok.*;
 @AllArgsConstructor
 public class ProposeDto {
     private Long id;
-    private Long item_id;
-    private Long seller_id;
-    private Long buyer_id;
+    private Long itemId;
+    private Long sellerId;
+    private Long buyerId;
     private String status;
 
     public static ProposeDto fromEntity(Propose propose){
         return ProposeDto.builder()
                 .id(propose.getId())
-                .item_id(propose.getItem_id())
-                .seller_id(propose.getSeller_id())
-                .buyer_id(propose.getBuyer_id())
+                .itemId(propose.getItemId())
+                .sellerId(propose.getSellerId())
+                .buyerId(propose.getBuyerId())
                 .status(propose.getStatus())
                 .build();
     }

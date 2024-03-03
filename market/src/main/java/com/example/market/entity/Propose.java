@@ -17,11 +17,11 @@ public class Propose {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Setter
-    private Long item_id;
+    private Long itemId;
     @Setter
-    private Long seller_id;
+    private Long sellerId;
     @Setter
-    private Long buyer_id;
+    private Long buyerId;
     @Setter
     private String status;
 
@@ -31,9 +31,9 @@ public class Propose {
     public static Propose fromEntity(ProposeDto proposeDto){
         return Propose.builder()
                 .id(proposeDto.getId())
-                .item_id(proposeDto.getItem_id())
-                .seller_id(proposeDto.getSeller_id())
-                .buyer_id(proposeDto.getBuyer_id())
+                .itemId(proposeDto.getItemId())
+                .sellerId(proposeDto.getSellerId())
+                .buyerId(proposeDto.getBuyerId())
                 .status(proposeDto.getStatus())
                 .build();
     }

@@ -164,32 +164,7 @@ public class ItemController {
         return "image successfully deleted";
     }
 
-    @GetMapping("/propose-item/{item_id}")
-    public ItemDto proposeItem(
-            @PathVariable("item_id")
-            Long item_id
-    ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
 
-        Item item = itemService.searchById(item_id);
-        Long seller_id = item.getUserEntity().getId();
-
-        if(userEntity.getId() == seller_id)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인 상품을 구매할수 없습니다.");
-
-        Propose propose = Propose.builder()
-                .item_id(item_id)
-                .seller_id(seller_id)
-                .buyer_id(userEntity.getId())
-                .status("Proposing")
-                .build();
-
-        proposeRepository.save(propose);
-
-        return ItemDto.fromEntity(item);
-
-    }
 
 
 
