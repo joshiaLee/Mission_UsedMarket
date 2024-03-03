@@ -1,5 +1,6 @@
 package com.example.market.entity;
 
+import com.example.market.dto.ShopDto;
 import com.example.market.enums.Category;
 import com.example.market.enums.Status;
 import jakarta.persistence.*;
@@ -29,4 +30,14 @@ public class Shop {
     private UserEntity userEntity;
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public static ShopDto fromDto(ShopDto shopDto){
+        return ShopDto.builder()
+                .id(shopDto.getId())
+                .name(shopDto.getName())
+                .introduction(shopDto.getIntroduction())
+                .category(shopDto.getCategory())
+                .status(shopDto.getStatus())
+                .build();
+    }
 }

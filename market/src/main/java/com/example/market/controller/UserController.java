@@ -26,7 +26,7 @@ import java.io.IOException;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService service;
     private final PasswordEncoder passwordEncoder;

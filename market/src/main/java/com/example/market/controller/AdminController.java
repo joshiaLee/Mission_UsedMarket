@@ -1,8 +1,10 @@
 package com.example.market.controller;
 
 import com.example.market.dto.UserDto;
+import com.example.market.entity.Shop;
 import com.example.market.entity.UserEntity;
 import com.example.market.enums.Status;
+import com.example.market.service.ShopService;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +18,7 @@ import java.util.List;
 @RestController
 public class AdminController {
     private final UserService userService;
-
+    private final ShopService shopService;
     // 사업자 신청 목록
     @GetMapping("/apply-list")
     public List<UserDto> applyList(){
@@ -33,6 +35,14 @@ public class AdminController {
 
         userEntity.setAuthorities("ROLE_CEO");
         userEntity.setStatus(Status.ADMITTED);
+        // 사업자 승인과 동시에 준비중인 쇼핑몰 개
+        Shop newShop = Shop.builder()
+                .userEntity(userEntity)
+                .status(Status.PREPARING)
+                .build();
+
+        shopService.join(newShop);
+
 
         userService.updateUser(userEntity);
 

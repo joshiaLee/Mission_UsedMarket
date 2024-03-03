@@ -30,7 +30,7 @@ public class Propose {
     @CreationTimestamp
     private LocalDateTime creationTime;
 
-    public static Propose fromEntity(ProposeDto proposeDto){
+    public static Propose fromDto(ProposeDto proposeDto){
         return Propose.builder()
                 .id(proposeDto.getId())
                 .itemId(proposeDto.getItemId())
