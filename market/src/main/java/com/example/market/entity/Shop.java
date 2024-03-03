@@ -1,5 +1,6 @@
 package com.example.market.entity;
 
+import com.example.market.enums.Category;
 import com.example.market.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +20,8 @@ public class Shop {
     @Setter
     private String introduction;
     @Setter
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @Setter
     @OneToOne
