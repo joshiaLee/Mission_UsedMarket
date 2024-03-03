@@ -7,15 +7,20 @@ import com.example.market.entity.ImageEntity;
 import com.example.market.entity.Item;
 import com.example.market.entity.UserEntity;
 import com.example.market.facade.AuthenticationFacade;
+import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
 import com.example.market.service.ItemService;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +31,39 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
-    private final UserService userService;
+    private final UserService service;
     private final ImageRepository imageRepository;
     private final AuthenticationFacade authFacade;
+
+    @PostMapping("/add-item")
+    public String addItem(
+            MultipartFile[] files,
+            @ModelAttribute
+            ItemDto itemDto,
+            Authentication authentication
+    ) throws IOException {
+        Item item = Item.fromDto(itemDto);
+        log.info(itemDto.toString());
+
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        UserEntity userEntity = service.searchByUsername(username);
+
+
+        item.setUserEntity(userEntity);
+        item.setStatus("OnSale");
+
+        itemService.join(item);
+
+        if (files != null && files.length > 0){
+            for(MultipartFile file: files) {
+                ImageEntity imageEntity = ImageFacade.AssociatedImage(item, file);
+                imageRepository.save(imageEntity);
+            }
+        }
+
+        return "redirect:/users/home";
+    }
+
 
     @GetMapping("/item-list")
     public List<ItemDto> viewItemList(){
@@ -38,7 +73,7 @@ public class ItemController {
     @GetMapping("/my-items")
     public List<ItemDto> myItemList(){
         String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = service.searchByUsername(username);
 
         return itemService.findAllItemByUser_Id(userEntity.getId());
     }
@@ -49,7 +84,7 @@ public class ItemController {
             Long item_id
     ){
         String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = service.searchByUsername(username);
 
         Item item = itemService.searchById(item_id);
 
@@ -69,7 +104,7 @@ public class ItemController {
             Long item_id
     ){
         String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = service.searchByUsername(username);
 
         Item item = itemService.searchById(item_id);
 

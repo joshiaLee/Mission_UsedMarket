@@ -1,15 +1,12 @@
 package com.example.market.controller;
 
-import com.example.market.dto.ItemDto;
 import com.example.market.entity.ImageEntity;
-import com.example.market.entity.Item;
 import com.example.market.entity.UserEntity;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.dto.UserDto;
 import com.example.market.dto.CustomUserDetails;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
-import com.example.market.repo.ItemRepository;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +32,6 @@ public class UserController {
     private final AuthenticationFacade authFacade;
     private final ImageRepository imageRepository;
 
-    private final ItemRepository itemRepository;
     @GetMapping("/home")
     public String home(){
         log.info(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -172,34 +168,6 @@ public class UserController {
         return "redirect:/users/home";
     }
 
-    @PostMapping("/add-item")
-    public String addItem(
-            MultipartFile[] files,
-            @ModelAttribute
-            ItemDto itemDto,
-            Authentication authentication
-    ) throws IOException {
-        Item item = Item.fromDto(itemDto);
-        log.info(itemDto.toString());
-
-        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-        UserEntity userEntity = service.searchByUsername(username);
-
-
-        item.setUserEntity(userEntity);
-        item.setStatus("OnSale");
-
-        itemRepository.save(item);
-
-        if (files != null && files.length > 0){
-            for(MultipartFile file: files) {
-                ImageEntity imageEntity = ImageFacade.AssociatedImage(item, file);
-                imageRepository.save(imageEntity);
-            }
-        }
-
-        return "redirect:/users/home";
-    }
 
 
 
