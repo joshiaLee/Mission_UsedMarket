@@ -68,7 +68,9 @@ public class WebSecurityConfig {
                                 "/users/delete-item/{item_id}", "/users/update-view/{item_id}",
                                 "/users/update-item/{item_id}", "/users/delete-item-image/{image_id}",
                                 "/propose/{item_id}", "/propose/received-list",
-                                "/propose/sent-list")
+                                "/propose/sent-list", "/propose/admit/{propose_id}",
+                                "/propose/reject/{propose_id}", "/propose/admit-list",
+                                "/propose/admit-list/{propose_id}")
                         .hasAnyRole("USER", "ADMIN", "CEO")
                         // 관리자 권한(사업자 목록 확인, 승인, 거절)
                         .requestMatchers("/auth/admin-role", "/admin/apply-list", "/admin/apply-admit/{id}", "/admin/apply-reject/{id}")

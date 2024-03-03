@@ -32,7 +32,7 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<ItemDto> findAllItemByUser_Id(Long user_id){
+    public List<ItemDto> findAllItemByUserId(Long user_id){
         return itemRepository
                 .findAllByUserEntityId(user_id)
                 .stream()

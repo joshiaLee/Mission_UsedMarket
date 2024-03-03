@@ -62,6 +62,32 @@ public class TestDataBean {
                 .build());
 
         service.createUser(UserEntity.builder()
+                .username("김철수")
+                .password(passwordEncoder.encode("password"))
+                .nickname("당")
+                .name("user4")
+                .age(20)
+                .email("user3@gmail.com")
+                .phone("01012345678")
+                .authorities("ROLE_USER")
+                .registrationNumber("1a45")
+                .status("Proceeding")
+                .build());
+
+        service.createUser(UserEntity.builder()
+                .username("유리")
+                .password(passwordEncoder.encode("password"))
+                .nickname("당리")
+                .name("user5")
+                .age(20)
+                .email("user3@gmail.com")
+                .phone("01012345678")
+                .authorities("ROLE_USER")
+                .registrationNumber("1234zz5")
+                .status("Proceeding")
+                .build());
+
+        service.createUser(UserEntity.builder()
                 .username("비활성")
                 .password(passwordEncoder.encode("password"))
                 .authorities("ROLE_UNACTIVATED")

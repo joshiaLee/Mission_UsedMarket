@@ -16,11 +16,13 @@ import java.util.List;
 public class AdminController {
     private final UserService userService;
 
+    // 사업자 신청 목록
     @GetMapping("/apply-list")
     public List<UserDto> applyList(){
         return userService.userEntitySearchByAuthoritiesAndStatus("ROLE_USER", "Proceeding");
     }
 
+    // 사업자 승인
     @PutMapping("/apply-admit/{id}")
     public String applyAdmit(
             @PathVariable("id") Long id){
@@ -36,6 +38,7 @@ public class AdminController {
         return "admitted";
     }
 
+    // 사업자 거절
     @PutMapping("/apply-reject/{id}")
     public String applyReject(
             @PathVariable("id") Long id){

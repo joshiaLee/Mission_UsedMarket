@@ -32,6 +32,7 @@ public class UserController {
     private final AuthenticationFacade authFacade;
     private final ImageRepository imageRepository;
 
+    // 홈 화면 모든 이용자 사용가능
     @GetMapping("/home")
     public String home(){
         log.info(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -39,11 +40,13 @@ public class UserController {
         return "index";
     }
 
+    // 로그인 화면
     @GetMapping("/login")
     public String loginForm(){
         return "login-form";
     }
 
+    // 내 프로필 화면
     @GetMapping("/my-profile")
     public String myProfile(
             Authentication authentication
@@ -56,6 +59,7 @@ public class UserController {
         return "my-profile";
     }
 
+    // 회원 가입 화면
     @GetMapping("/register")
     public String signUpForm(){
         return "register-form";
@@ -125,7 +129,8 @@ public class UserController {
 
         return "redirect:/users/home";
     }
-    
+
+    // 프로필 사진 추가
     @PostMapping("/add-image") String addImage(
             MultipartFile file,
             Authentication authentication
@@ -145,6 +150,7 @@ public class UserController {
         return "redirect:/users/home";
     }
 
+    // 사엽자 등록 신
     @PostMapping("/apply")
     public String apply(
         @RequestBody
