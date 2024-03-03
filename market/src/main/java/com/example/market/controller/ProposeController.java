@@ -58,13 +58,26 @@ public class ProposeController {
 
     }
 
-    @GetMapping("/list")
-    public List<ProposeDto> getProposeList(){
+    @GetMapping("/received-list")
+    public List<ProposeDto> getReceivedList(){
         String username = authFacade.getAuth().getName();
         UserEntity userEntity = service.searchByUsername(username);
 
-        List<Propose> proposeList = proposeRepository.findAllBySellerId(userEntity.getId());
+        List<Propose> receivedList = proposeRepository.findAllBySellerId(userEntity.getId());
 
-        return proposeList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
+        return receivedList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
     }
+
+    @GetMapping("/sent-list")
+    public List<ProposeDto> getSentList(){
+        String username = authFacade.getAuth().getName();
+        UserEntity userEntity = service.searchByUsername(username);
+
+        List<Propose> sentList = proposeRepository.findAllByBuyerId(userEntity.getId());
+
+        return sentList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
+    }
+
+
+
 }
