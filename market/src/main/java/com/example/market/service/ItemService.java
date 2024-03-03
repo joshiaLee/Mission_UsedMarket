@@ -28,7 +28,7 @@ public class ItemService {
 
     public List<ItemDto> findAllItemByUser_Id(Long user_id){
         return itemRepository
-                .findAllByUserEntity_Id(user_id)
+                .findAllByUserEntityId(user_id)
                 .stream()
                 .map(ItemDto::fromEntity)
                 .collect(Collectors.toList());

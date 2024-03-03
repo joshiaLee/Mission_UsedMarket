@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    List<Item> findAllByUserEntity_Id(Long userId);
+    List<Item> findAllByUserEntityId(Long userId);
 }
