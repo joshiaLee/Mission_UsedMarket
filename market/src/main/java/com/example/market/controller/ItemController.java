@@ -5,10 +5,12 @@ import com.example.market.dto.ItemDto;
 import com.example.market.dto.UpdateItemResponse;
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.Item;
+import com.example.market.entity.Propose;
 import com.example.market.entity.UserEntity;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
+import com.example.market.repo.ProposeRepository;
 import com.example.market.service.ItemService;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,11 @@ public class ItemController {
     private final ItemService itemService;
     private final UserService service;
     private final ImageRepository imageRepository;
+    private final ProposeRepository proposeRepository;
+
     private final AuthenticationFacade authFacade;
+
+
 
     @PostMapping("/add-item")
     public String addItem(
@@ -156,6 +162,33 @@ public class ItemController {
         imageRepository.deleteById(image_id);
 
         return "image successfully deleted";
+    }
+
+    @GetMapping("/propose-item/{item_id}")
+    public ItemDto proposeItem(
+            @PathVariable("item_id")
+            Long item_id
+    ){
+        String username = authFacade.getAuth().getName();
+        UserEntity userEntity = service.searchByUsername(username);
+
+        Item item = itemService.searchById(item_id);
+        Long seller_id = item.getUserEntity().getId();
+
+        if(userEntity.getId() == seller_id)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인 상품을 구매할수 없습니다.");
+
+        Propose propose = Propose.builder()
+                .item_id(item_id)
+                .seller_id(seller_id)
+                .buyer_id(userEntity.getId())
+                .status("Proposing")
+                .build();
+
+        proposeRepository.save(propose);
+
+        return ItemDto.fromEntity(item);
+
     }
 
 

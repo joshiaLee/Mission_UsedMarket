@@ -64,7 +64,10 @@ public class WebSecurityConfig {
                         // 로그인 안한 사용자만 가능
                         .anonymous()
                         // 비활성화 사용자 제외 모두 이용 가능 서비스
-                        .requestMatchers("/auth/user-role", "/users/item-list", "/users/delete-item/{item_id}", "/users/update-view/{item_id}", "/users/update-item/{item_id}")
+                        .requestMatchers("/auth/user-role", "/users/item-list",
+                                "/users/delete-item/{item_id}", "/users/update-view/{item_id}",
+                                "/users/update-item/{item_id}", "/users/delete-item-image/{image_id}",
+                                "/users/propose-item/{item_id}")
                         .hasAnyRole("USER", "ADMIN", "CEO")
                         // 관리자 권한(사업자 목록 확인, 승인, 거절)
                         .requestMatchers("/auth/admin-role", "/admin/apply-list", "/admin/apply-admit/{id}", "/admin/apply-reject/{id}")

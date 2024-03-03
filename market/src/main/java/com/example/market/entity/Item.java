@@ -32,6 +32,7 @@ public class Item {
     @JoinColumn(name = "users_id")
     private UserEntity userEntity;
 
+    // orphanRemoval 설정을 위해 양방향 매핑함
     @Setter
     @OneToMany(mappedBy = "item", orphanRemoval = true)
     private List<ImageEntity> imageEntities = new ArrayList<>();
