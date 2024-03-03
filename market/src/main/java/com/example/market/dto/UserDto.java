@@ -1,6 +1,7 @@
 package com.example.market.dto;
 
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import lombok.*;
 
 @Getter
@@ -29,7 +30,7 @@ public class UserDto {
 
     private String registrationNumber;
 
-    private String status;
+    private Status status;
     private String authorities;
 
     public static UserDto fromEntity(UserEntity userEntity){

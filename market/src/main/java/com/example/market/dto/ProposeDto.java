@@ -1,6 +1,7 @@
 package com.example.market.dto;
 
 import com.example.market.entity.Propose;
+import com.example.market.enums.Status;
 import lombok.*;
 
 @Setter
@@ -14,7 +15,7 @@ public class ProposeDto {
     private Long itemId;
     private Long sellerId;
     private Long buyerId;
-    private String status;
+    private Status status;
 
     public static ProposeDto fromEntity(Propose propose){
         return ProposeDto.builder()

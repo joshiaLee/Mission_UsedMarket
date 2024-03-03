@@ -5,6 +5,7 @@ import com.example.market.dto.ProposeDto;
 import com.example.market.entity.Item;
 import com.example.market.entity.Propose;
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.service.ItemService;
 import com.example.market.service.ProposeService;
@@ -47,7 +48,7 @@ public class ProposeController {
                 .itemId(item_id)
                 .sellerId(seller_id)
                 .buyerId(userEntity.getId())
-                .status("Proposing")
+                .status(Status.PROPOSING)
                 .build();
 
         proposeService.join(propose);
@@ -89,7 +90,7 @@ public class ProposeController {
         if(!userEntity.getId().equals(proposeEntity.getSellerId()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 요청만 승낙할수 있습니다,");
 
-        proposeEntity.setStatus("Admitted");
+        proposeEntity.setStatus(Status.ADMITTED);
 
         proposeService.join(proposeEntity);
 
@@ -109,7 +110,7 @@ public class ProposeController {
         if(!userEntity.getId().equals(proposeEntity.getSellerId()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 요청만 거절할수 있습니다,");
 
-        proposeEntity.setStatus("Rejected");
+        proposeEntity.setStatus(Status.REJECTED);
 
         proposeService.join(proposeEntity);
 
@@ -121,7 +122,7 @@ public class ProposeController {
     public List<ProposeDto> admitList(){
         String username = authFacade.getAuth().getName();
         UserEntity userEntity = service.searchByUsername(username);
-        return proposeService.searchAllAdmitted(userEntity.getId(), "Admitted");
+        return proposeService.searchAllAdmitted(userEntity.getId(), Status.ADMITTED);
 
     }
 
@@ -144,11 +145,11 @@ public class ProposeController {
             if(propose.equals(proposeEntity))
                 continue;
 
-            propose.setStatus("Rejected");
+            propose.setStatus(Status.REJECTED);
             proposeService.join(propose);
         }
 
-        proposeEntity.setStatus("Completed");
+        proposeEntity.setStatus(Status.COMPLETED);
         proposeService.join(proposeEntity);
 
         return "propose successfully confirmed";

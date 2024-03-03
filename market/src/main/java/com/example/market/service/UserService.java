@@ -3,6 +3,7 @@ package com.example.market.service;
 import com.example.market.dto.CustomUserDetails;
 import com.example.market.dto.UserDto;
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import com.example.market.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public List<UserDto> userEntitySearchByAuthoritiesAndStatus(String authorities, String status){
+    public List<UserDto> userEntitySearchByAuthoritiesAndStatus(String authorities, Status status){
         List<UserEntity> userEntityList = userRepository.findByAuthoritiesAndStatus(authorities, status);
 
         return userEntityList.stream()

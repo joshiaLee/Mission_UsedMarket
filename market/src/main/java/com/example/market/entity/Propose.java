@@ -1,6 +1,7 @@
 package com.example.market.entity;
 
 import com.example.market.dto.ProposeDto;
+import com.example.market.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,7 +24,8 @@ public class Propose {
     @Setter
     private Long buyerId;
     @Setter
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @CreationTimestamp
     private LocalDateTime creationTime;

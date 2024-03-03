@@ -1,5 +1,6 @@
 package com.example.market.entity;
 
+import com.example.market.enums.Status;
 import com.example.market.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,7 +37,8 @@ public class UserEntity {
     private String registrationNumber;
 
     @Setter
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Setter
     private String authorities;

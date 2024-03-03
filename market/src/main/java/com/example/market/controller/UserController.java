@@ -2,6 +2,7 @@ package com.example.market.controller;
 
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.dto.UserDto;
 import com.example.market.dto.CustomUserDetails;
@@ -167,7 +168,7 @@ public class UserController {
         UserEntity userEntity = service.searchByUsername(username);
         
         userEntity.setRegistrationNumber(userDto.getRegistrationNumber());
-        userEntity.setStatus("Proceeding");
+        userEntity.setStatus(Status.PROCEEDING);
 
         service.updateUser(userEntity);
 

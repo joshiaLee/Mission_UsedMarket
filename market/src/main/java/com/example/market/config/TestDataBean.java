@@ -1,6 +1,7 @@
 package com.example.market.config;
 
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import com.example.market.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,7 @@ public class TestDataBean {
                 .phone("01012345678")
                 .authorities("ROLE_USER")
                 .registrationNumber("1234")
-                .status("Proceeding")
+                .status(Status.PROCEEDING)
                 .build());
 
         service.createUser(UserEntity.builder()
@@ -58,7 +59,7 @@ public class TestDataBean {
                 .phone("01012345678")
                 .authorities("ROLE_USER")
                 .registrationNumber("12345")
-                .status("Proceeding")
+                .status(Status.PROCEEDING)
                 .build());
 
         service.createUser(UserEntity.builder()
@@ -71,7 +72,7 @@ public class TestDataBean {
                 .phone("01012345678")
                 .authorities("ROLE_USER")
                 .registrationNumber("1a45")
-                .status("Proceeding")
+                .status(Status.PROCEEDING)
                 .build());
 
         service.createUser(UserEntity.builder()
@@ -84,7 +85,7 @@ public class TestDataBean {
                 .phone("01012345678")
                 .authorities("ROLE_USER")
                 .registrationNumber("1234zz5")
-                .status("Proceeding")
+                .status(Status.PROCEEDING)
                 .build());
 
         service.createUser(UserEntity.builder()

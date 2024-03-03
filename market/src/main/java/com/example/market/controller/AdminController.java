@@ -2,6 +2,7 @@ package com.example.market.controller;
 
 import com.example.market.dto.UserDto;
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class AdminController {
     // 사업자 신청 목록
     @GetMapping("/apply-list")
     public List<UserDto> applyList(){
-        return userService.userEntitySearchByAuthoritiesAndStatus("ROLE_USER", "Proceeding");
+        return userService.userEntitySearchByAuthoritiesAndStatus("ROLE_USER", Status.PROCEEDING);
     }
 
     // 사업자 승인
@@ -31,7 +32,7 @@ public class AdminController {
         UserEntity userEntity = userService.searchById(id);
 
         userEntity.setAuthorities("ROLE_CEO");
-        userEntity.setStatus("Admitted");
+        userEntity.setStatus(Status.ADMITTED);
 
         userService.updateUser(userEntity);
 
@@ -45,7 +46,7 @@ public class AdminController {
 
         UserEntity userEntity = userService.searchById(id);
 
-        userEntity.setStatus("Rejected");
+        userEntity.setStatus(Status.REJECTED);
         userService.updateUser(userEntity);
 
         return "rejected";

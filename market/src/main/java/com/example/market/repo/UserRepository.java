@@ -1,6 +1,7 @@
 package com.example.market.repo;
 
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -11,6 +12,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     boolean existsByUsername(String username);
 
-    List<UserEntity> findByAuthoritiesAndStatus(String authorities, String status);
+    List<UserEntity> findByAuthoritiesAndStatus(String authorities, Status status);
 
 }

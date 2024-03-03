@@ -1,6 +1,7 @@
 package com.example.market.entity;
 
 import com.example.market.dto.ItemDto;
+import com.example.market.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +26,8 @@ public class Item {
     private Integer price;
 
     @Setter
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

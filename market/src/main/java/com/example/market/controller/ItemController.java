@@ -6,6 +6,7 @@ import com.example.market.dto.UpdateItemResponse;
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.Item;
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
@@ -54,7 +55,7 @@ public class ItemController {
 
 
         item.setUserEntity(userEntity);
-        item.setStatus("OnSale");
+        item.setStatus(Status.SALE);
 
         itemService.join(item);
 

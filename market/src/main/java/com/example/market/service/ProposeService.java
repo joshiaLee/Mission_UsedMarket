@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.dto.ProposeDto;
 import com.example.market.entity.Propose;
+import com.example.market.enums.Status;
 import com.example.market.repo.ProposeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class ProposeService {
         return proposeList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
     }
 
-    public List<ProposeDto> searchAllAdmitted(Long buyerId, String status){
+    public List<ProposeDto> searchAllAdmitted(Long buyerId, Status status){
         List<Propose> admittedList = proposeRepository.findAllByBuyerIdAndStatus(buyerId, status);
         return admittedList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
     }

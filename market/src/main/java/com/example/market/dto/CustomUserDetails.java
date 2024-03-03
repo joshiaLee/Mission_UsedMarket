@@ -1,5 +1,6 @@
 package com.example.market.dto;
 
+import com.example.market.enums.Status;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,7 +41,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Setter
     @Getter
-    private String status;
+    private Status status;
 
     @Setter
     private String authorities;

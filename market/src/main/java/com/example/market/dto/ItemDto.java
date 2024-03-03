@@ -1,6 +1,7 @@
 package com.example.market.dto;
 
 import com.example.market.entity.Item;
+import com.example.market.enums.Status;
 import lombok.*;
 
 @Setter
@@ -14,7 +15,7 @@ public class ItemDto {
     private String name;
     private String content;
     private Integer price;
-    private String status;
+    private Status status;
 
 
     public static ItemDto fromEntity(Item item){
