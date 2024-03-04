@@ -26,6 +26,9 @@ public class Item {
     private Integer price;
 
     @Setter
+    private Integer stock;
+
+    @Setter
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -46,6 +49,7 @@ public class Item {
                 .name(itemDto.getName())
                 .content(itemDto.getContent())
                 .price(itemDto.getPrice())
+                .stock(itemDto.getStock())
                 .status(itemDto.getStatus())
                 .build();
 

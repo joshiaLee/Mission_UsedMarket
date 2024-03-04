@@ -17,6 +17,8 @@ public class ShopDto {
     private String name;
     private String introduction;
     private Category category;
+
+    private Long ownerId;
     private Status status;
 
     public static ShopDto fromEntity(Shop shop){
@@ -25,6 +27,7 @@ public class ShopDto {
                 .name(shop.getName())
                 .introduction(shop.getIntroduction())
                 .category(shop.getCategory())
+                .ownerId(shop.getUserEntity().getId())
                 .status(shop.getStatus())
                 .build();
     }

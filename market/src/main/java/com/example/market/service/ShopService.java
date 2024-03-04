@@ -22,4 +22,10 @@ public class ShopService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
     }
+
+    public Shop searchByUserEntityId(Long id){
+        return shopRepository.findByUserEntityId(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+    }
 }

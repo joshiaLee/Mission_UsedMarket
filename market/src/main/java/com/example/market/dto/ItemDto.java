@@ -15,6 +15,7 @@ public class ItemDto {
     private String name;
     private String content;
     private Integer price;
+    private Integer stock;
     private Status status;
 
 
@@ -24,6 +25,7 @@ public class ItemDto {
                 .name(item.getName())
                 .content(item.getContent())
                 .price(item.getPrice())
+                .stock(item.getStock())
                 .status(item.getStatus())
                 .build();
     }

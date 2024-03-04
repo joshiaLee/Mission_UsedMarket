@@ -8,7 +8,6 @@ import com.example.market.entity.ShopPropose;
 import com.example.market.entity.UserEntity;
 import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
-import com.example.market.repo.ShopProposeRepository;
 import com.example.market.service.ShopProposeService;
 import com.example.market.service.ShopService;
 import com.example.market.service.UserService;
@@ -41,7 +40,7 @@ public class ShopController {
         String username = authFacade.getAuth().getName();
         UserEntity userEntity = userService.searchByUsername(username);
 
-        Shop shop = shopService.searchById(userEntity.getId());
+        Shop shop = shopService.searchByUserEntityId((userEntity.getId()));
 
         shop.setName(shopDto.getName());
         shop.setIntroduction(shopDto.getIntroduction());
@@ -59,9 +58,9 @@ public class ShopController {
     ){
         String username = authFacade.getAuth().getName();
         UserEntity userEntity = userService.searchByUsername(username);
-        Shop shop = shopService.searchById(userEntity.getId());
+        Shop shop = shopService.searchByUserEntityId((userEntity.getId()));
 
-        if(shop.getName() == null || shop.getIntroduction() == null || shop.getCategory() != null)
+        if(shop.getName() == null || shop.getIntroduction() == null || shop.getCategory() == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "쇼핑몰 정보가 부족합니다.");
 
         ShopPropose newPropose = ShopPropose.builder()
@@ -81,7 +80,7 @@ public class ShopController {
     ){
         String username = authFacade.getAuth().getName();
         UserEntity userEntity = userService.searchByUsername(username);
-        Shop shop = shopService.searchById(userEntity.getId());
+        Shop shop = shopService.searchByUserEntityId(userEntity.getId());
         if(!shop.getStatus().equals(Status.OPEN))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "오픈된 쇼핑몰만 폐쇄요청을 할수 있습니다.");
 
@@ -94,11 +93,12 @@ public class ShopController {
         return ShopProposeDto.fromEntity(shopProposeService.join(newPropose));
     }
 
+    // 내 신청제안 보기
     @GetMapping("/my-proposes")
     public List<ShopProposeDto> getMyProposes(){
         String username = authFacade.getAuth().getName();
         UserEntity userEntity = userService.searchByUsername(username);
-        Shop shop = shopService.searchById(userEntity.getId());
+        Shop shop = shopService.searchByUserEntityId(userEntity.getId());
 
         return shopProposeService.searchAllByShopId(shop.getId());
     }
