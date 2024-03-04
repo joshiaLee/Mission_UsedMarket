@@ -2,7 +2,8 @@ package com.example.market.enums;
 
 public enum Status {
 
-    CLOSE,
+    CLOSING,
+    CLOSED,
     OPEN,
     PREPARING,
     ADMITTED,
@@ -10,9 +11,9 @@ public enum Status {
     REJECTED,
     CONFIRMED,
     COMPLETED,
-
     PROPOSING,
-    SALE
+    SALE,
+    SOLD
 
 
 

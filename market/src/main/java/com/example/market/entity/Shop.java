@@ -6,6 +6,8 @@ import com.example.market.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @Entity
@@ -28,9 +30,11 @@ public class Shop {
     @OneToOne
     @JoinColumn(name = "users_id")
     private UserEntity userEntity;
+    @Setter
     @Enumerated(EnumType.STRING)
     private Status status;
-
+    @Setter
+    private LocalDateTime recentTransaction;
     public static ShopDto fromDto(ShopDto shopDto){
         return ShopDto.builder()
                 .id(shopDto.getId())

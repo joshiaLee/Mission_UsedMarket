@@ -53,6 +53,9 @@ public class WebSecurityConfig {
                         // 사업자 등록 신청
                         .requestMatchers("/users/apply", "/users/add-item", "/users/my-items")
                         .hasRole("USER")
+                        .requestMatchers("/shops/update", "/shops/apply-open",
+                                "/shops/apply-close", "/shops/my-proposes")
+                        .hasRole("CEO")
                         // 내 프로필 확인
                         .requestMatchers("/users/my-profile")
                         .authenticated()
@@ -73,7 +76,11 @@ public class WebSecurityConfig {
                                 "/propose/admit-list/{propose_id}")
                         .hasAnyRole("USER", "ADMIN", "CEO")
                         // 관리자 권한(사업자 목록 확인, 승인, 거절)
-                        .requestMatchers("/auth/admin-role", "/admin/apply-list", "/admin/apply-admit/{id}", "/admin/apply-reject/{id}")
+                        .requestMatchers("/auth/admin-role", "/admin/apply-list",
+                                "/admin/apply-admit/{id}", "/admin/apply-reject/{id}",
+                                "/admin/shops-list", "/admin/shops/{shop_id}",
+                                "/admin/admit/{propose_id}", "/admin/reject/{propose_id}",
+                                "/admin/closing-shops", "/admin/closing-shops/{propose_id}")
                         .hasRole("ADMIN")
 
                         // 권한 파트
