@@ -19,6 +19,7 @@ public class ShopDto {
     private Category category;
 
     private Long ownerId;
+
     private Status status;
 
     public static ShopDto fromEntity(Shop shop){

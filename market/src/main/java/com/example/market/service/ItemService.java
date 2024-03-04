@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 public class ItemService {
     private final ItemRepository itemRepository;
 
-    public void join(Item item){
-        itemRepository.save(item);
+    public Item join(Item item){
+        return itemRepository.save(item);
     }
 
 

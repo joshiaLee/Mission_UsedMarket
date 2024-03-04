@@ -57,11 +57,11 @@ public class ItemController {
         item.setUserEntity(userEntity);
         item.setStatus(Status.SALE);
 
-        itemService.join(item);
+        Item savedItem = itemService.join(item);
 
         if (files != null && files.length > 0){
             for(MultipartFile file: files) {
-                ImageEntity imageEntity = ImageFacade.AssociatedImage(item, file);
+                ImageEntity imageEntity = ImageFacade.AssociatedImage(savedItem, file);
                 imageRepository.save(imageEntity);
             }
         }
@@ -138,16 +138,16 @@ public class ItemController {
         item.setContent(itemDto.getContent());
         item.setPrice(itemDto.getPrice());
 
-        itemService.join(item);
+        Item savedItem = itemService.join(item);
 
         if (files != null && files.length > 0){
             for(MultipartFile file: files) {
-                ImageEntity imageEntity = ImageFacade.AssociatedImage(item, file);
+                ImageEntity imageEntity = ImageFacade.AssociatedImage(savedItem, file);
                 imageRepository.save(imageEntity);
             }
         }
 
-        return ItemDto.fromEntity(item);
+        return ItemDto.fromEntity(savedItem);
     }
 
     // 아이템 사진 개별 지우기
