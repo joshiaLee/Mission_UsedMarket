@@ -55,7 +55,8 @@ public class WebSecurityConfig {
                         .hasRole("USER")
                         .requestMatchers("/shops/update", "/shops/apply-open",
                                 "/shops/apply-close", "/shops/my-proposes",
-                                "/shops/add-item")
+                                "/shops/add-item", "/shops/purchases-list",
+                                "/shops/admit-purchase/{purchase_id}", "/shops/reject-purchase/{purchase_id}")
                         .hasRole("CEO")
                         // 내 프로필 확인
                         .requestMatchers("/users/my-profile")
@@ -72,6 +73,7 @@ public class WebSecurityConfig {
                                 "/users/delete-item/{item_id}", "/users/update-view/{item_id}",
                                 "/users/update-item/{item_id}", "/users/delete-item-image/{image_id}",
                                 "/users/shops-list", "/users/shops-search", "/users/items-search",
+                                "/users/purchase-item",
                                 "/propose/{item_id}", "/propose/received-list",
                                 "/propose/sent-list", "/propose/admit/{propose_id}",
                                 "/propose/reject/{propose_id}", "/propose/admit-list",

@@ -2,6 +2,7 @@ package com.example.market.repoImpl;
 
 import com.example.market.customRepo.ItemRepositoryCustom;
 import com.example.market.entity.Item;
+import com.example.market.enums.Status;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,8 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .where(
                         item.name.contains(name),
                         item.price.between(above, under),
-                        item.shop.id.isNotNull()
+                        item.shop.id.isNotNull(),
+                        item.shop.status.eq(Status.OPEN)
                 ).fetch();
     }
 }

@@ -1,18 +1,12 @@
 package com.example.market.controller;
 
-import com.example.market.dto.ItemDto;
-import com.example.market.dto.MessageDto;
-import com.example.market.dto.ShopDto;
-import com.example.market.dto.ShopProposeDto;
+import com.example.market.dto.*;
 import com.example.market.entity.*;
 import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
-import com.example.market.service.ItemService;
-import com.example.market.service.ShopProposeService;
-import com.example.market.service.ShopService;
-import com.example.market.service.UserService;
+import com.example.market.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,7 +28,7 @@ public class ShopController {
     private final UserService userService;
     private final ItemService itemService;
     private final ImageRepository imageRepository;
-
+    private final PurchaseProposeService proposeService;
 
 
     private final ShopProposeService shopProposeService;
@@ -140,5 +134,58 @@ public class ShopController {
 
         return ItemDto.fromEntity(savedItem);
 
+    }
+    
+    // 쇼핑몰 구매제안 확인
+    @GetMapping("/purchases-list")
+    public List<PurchaseProposeDto> PurchaseList(){
+        String username = authFacade.getAuth().getName();
+        UserEntity userEntity = userService.searchByUsername(username);
+        Shop shop = shopService.searchByUserEntityId(userEntity.getId());
+        
+        return proposeService.searchAllByShopId(shop.getId());
+    }
+    
+    // 구매제안 승낙 -> 아이템 재고 감소
+    @PutMapping("/admit-purchase/{purchase_id}")
+    public PurchaseProposeDto admitPurchase(
+            @PathVariable
+            Long purchase_id
+    ){
+        String username = authFacade.getAuth().getName();
+        UserEntity userEntity = userService.searchByUsername(username);
+        Shop shop = shopService.searchByUserEntityId(userEntity.getId());
+        
+        PurchasePropose purchasePropose = proposeService.searchById(purchase_id);
+        if(!shop.getId().equals(purchasePropose.getShopId()) || !purchasePropose.getStatus().equals(Status.PROCEEDING))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        
+        // Transaction 로직 실행
+        itemService.purchaseItem(purchasePropose.getItemId(), purchasePropose.getQuantity());
+
+        // 구매제안 최종 승인
+        purchasePropose.setStatus(Status.ADMITTED);
+
+        return PurchaseProposeDto.fromEntity(proposeService.join(purchasePropose));
+        
+        
+    }
+
+    // 구매제안 거절
+    @PutMapping("/reject-purchase/{purchase_id}")
+    public PurchaseProposeDto rejectPropose(
+            @PathVariable("purchase_id")
+            Long purchase_id
+    ){
+        String username = authFacade.getAuth().getName();
+        UserEntity userEntity = userService.searchByUsername(username);
+        Shop shop = shopService.searchByUserEntityId(userEntity.getId());
+
+        PurchasePropose purchasePropose = proposeService.searchById(purchase_id);
+        if(!shop.getId().equals(purchasePropose.getShopId()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        purchasePropose.setStatus(Status.REJECTED);
+        return PurchaseProposeDto.fromEntity(proposeService.join(purchasePropose));
     }
 }

@@ -2,6 +2,7 @@ package com.example.market.controller;
 
 import com.example.market.dto.*;
 import com.example.market.entity.ImageEntity;
+import com.example.market.entity.PurchasePropose;
 import com.example.market.entity.UserEntity;
 import com.example.market.enums.Category;
 import com.example.market.enums.Status;
@@ -9,6 +10,7 @@ import com.example.market.facade.AuthenticationFacade;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
 import com.example.market.service.ItemService;
+import com.example.market.service.PurchaseProposeService;
 import com.example.market.service.ShopService;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class UserController {
     private final ImageRepository imageRepository;
     private final ShopService shopService;
     private final ItemService itemService;
+    private final PurchaseProposeService proposeService;
 
     // 홈 화면 모든 이용자 사용가능
     @GetMapping("/home")
@@ -187,7 +190,7 @@ public class UserController {
         return shopService.searchAll();
     }
 
-    // 이름, 카테고리로 쇼핑몰 검색
+    // 이름, 카테고리로 쇼핑몰 검색 (이때 오픈된 쇼핑몰이여야 함)
     // /users/shops-search?name=철수&category=Electronics
     @GetMapping("/shops-search")
     public List<ShopDto> searchShops(
@@ -196,10 +199,11 @@ public class UserController {
             @RequestParam("category")
             Category category
     ){
-        return shopService.searchAllByNameAndCategory(name, category);
+        return shopService.searchAllByNameAndCategory(name, category, Status.OPEN);
     }
 
-    // 이름, 가격범위로 아이템 검색 (이때 아이템 이미지와, 아이템이 속한 쇼핑몰도 같은 조회할수 있어야함)
+    // 이름, 가격범위로 아이템 검색 (이때 아이템 이미지와, 아이템이 속한 쇼핑몰도 같이 조회할수 있어야함)
+    // 이떄 오픈된 쇼핑몰이여야함
     // /users/items-search?name=컴퓨터&above=10000&under=150000
     @GetMapping("/items-search")
     public List<ItemsResponseDto> searchItems(
@@ -225,6 +229,23 @@ public class UserController {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    // 유저가 쇼핑몰에 구매제안
+    @PostMapping("/purchase-item")
+    public PurchaseProposeDto purchaseItem(
+            @RequestBody
+            PurchaseProposeDto proposeDto
+    ){
+        PurchasePropose newPropose = PurchasePropose.builder()
+                .itemId(proposeDto.getItemId())
+                .shopId(proposeDto.getShopId())
+                .quantity(proposeDto.getQuantity())
+                .status(Status.PROCEEDING)
+                .build();
+
+        return PurchaseProposeDto.fromEntity(proposeService.join(newPropose));
+
     }
 
 

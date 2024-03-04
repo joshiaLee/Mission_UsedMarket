@@ -3,6 +3,7 @@ package com.example.market.service;
 import com.example.market.dto.ShopDto;
 import com.example.market.entity.Shop;
 import com.example.market.enums.Category;
+import com.example.market.enums.Status;
 import com.example.market.repo.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +43,9 @@ public class ShopService {
                 .collect(Collectors.toList());
     }
 
-    public List<ShopDto> searchAllByNameAndCategory(String name, Category category){
+    public List<ShopDto> searchAllByNameAndCategory(String name, Category category, Status status){
         return shopRepository
-                .findAllByNameAndCategoryOrderByRecentTransactionDesc(name, category)
+                .findAllByNameAndCategoryAndStatusOrderByRecentTransactionDesc(name, category, status)
                 .stream()
                 .map(ShopDto::fromEntity)
                 .collect(Collectors.toList());
