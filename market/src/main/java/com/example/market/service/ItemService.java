@@ -49,4 +49,8 @@ public class ItemService {
     public void deleteItem(Long id){
         itemRepository.deleteById(id);
     }
+
+    public List<Item> searchAllByNameAndPrice(String name, Integer above, Integer under){
+        return itemRepository.findAllByNameAndPrice(name, above, under);
+    }
 }

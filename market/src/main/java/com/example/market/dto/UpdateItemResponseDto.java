@@ -10,7 +10,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateItemResponse {
+public class UpdateItemResponseDto {
     private ItemDto itemDto;
     private List<ImageDto> imagesDto;
 }

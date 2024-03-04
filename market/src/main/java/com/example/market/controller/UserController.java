@@ -1,15 +1,14 @@
 package com.example.market.controller;
 
-import com.example.market.dto.ShopDto;
+import com.example.market.dto.*;
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.UserEntity;
 import com.example.market.enums.Category;
 import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
-import com.example.market.dto.UserDto;
-import com.example.market.dto.CustomUserDetails;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
+import com.example.market.service.ItemService;
 import com.example.market.service.ShopService;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -37,6 +37,7 @@ public class UserController {
     private final AuthenticationFacade authFacade;
     private final ImageRepository imageRepository;
     private final ShopService shopService;
+    private final ItemService itemService;
 
     // 홈 화면 모든 이용자 사용가능
     @GetMapping("/home")
@@ -197,6 +198,36 @@ public class UserController {
     ){
         return shopService.searchAllByNameAndCategory(name, category);
     }
+
+    // 이름, 가격범위로 아이템 검색 (이때 아이템 이미지와, 아이템이 속한 쇼핑몰도 같은 조회할수 있어야함)
+    // /users/items-search?name=컴퓨터&above=10000&under=150000
+    @GetMapping("/items-search")
+    public List<ItemsResponseDto> searchItems(
+            @RequestParam("name")
+            String name,
+            @RequestParam("above")
+            Integer above,
+            @RequestParam("under")
+            Integer under
+    ){
+        return itemService.searchAllByNameAndPrice(name, above, under)
+                .stream()
+                .map(item -> {
+                    List<ImageDto> imagesDto = imageRepository.findAllByItemId(item.getId())
+                            .stream()
+                            .map(ImageDto::fromEntity)
+                            .collect(Collectors.toList());
+
+                    return new ItemsResponseDto(
+                            ItemDto.fromEntity(item),
+                            imagesDto,
+                            ShopDto.fromEntity(item.getShop())
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+
 
 
 

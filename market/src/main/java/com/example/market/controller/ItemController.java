@@ -2,7 +2,7 @@ package com.example.market.controller;
 
 import com.example.market.dto.ImageDto;
 import com.example.market.dto.ItemDto;
-import com.example.market.dto.UpdateItemResponse;
+import com.example.market.dto.UpdateItemResponseDto;
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.Item;
 import com.example.market.entity.UserEntity;
@@ -103,7 +103,7 @@ public class ItemController {
 
     // 아이템 업데이트 화면
     @GetMapping("/update-view/{item_id}")
-    public UpdateItemResponse updateView(
+    public UpdateItemResponseDto updateView(
             @PathVariable("item_id")
             Long item_id
     ){
@@ -116,7 +116,7 @@ public class ItemController {
         List<ImageEntity> imageEntities = imageRepository.findAllByItemId(item_id);
         List<ImageDto> imagesDto = imageEntities.stream().map(ImageDto::fromEntity).collect(Collectors.toList());
 
-        return new UpdateItemResponse(itemDto, imagesDto);
+        return new UpdateItemResponseDto(itemDto, imagesDto);
     }
 
 
