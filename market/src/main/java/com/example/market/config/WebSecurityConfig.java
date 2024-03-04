@@ -5,7 +5,6 @@ import com.example.market.jwt.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -38,12 +37,6 @@ public class WebSecurityConfig {
                                 "/token/issue"
                         )
                         .permitAll()
-
-                        .requestMatchers(HttpMethod.GET, "/articles")
-                        .permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/articles")
-                        .authenticated()
                         // 추가정보 등록
                         .requestMatchers("/users/add-info")
                         .hasRole("UNACTIVATED")
@@ -86,12 +79,6 @@ public class WebSecurityConfig {
                                 "/admin/admit/{propose_id}", "/admin/reject/{propose_id}",
                                 "/admin/closing-shops", "/admin/closing-shops/{propose_id}")
                         .hasRole("ADMIN")
-
-                        // 권한 파트
-                        .requestMatchers("/auth/read-authority")
-                        .hasAnyAuthority("READ_AUTHORITY", "WRITE_AUTHORITY")
-                        .requestMatchers("/auth/write-authority")
-                        .hasAuthority("WRITE_AUTHORITY")
                         .anyRequest()
                         .permitAll()
                 )
