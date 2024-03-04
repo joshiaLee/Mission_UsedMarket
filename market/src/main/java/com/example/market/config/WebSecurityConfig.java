@@ -54,7 +54,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/users/apply", "/users/add-item", "/users/my-items")
                         .hasRole("USER")
                         .requestMatchers("/shops/update", "/shops/apply-open",
-                                "/shops/apply-close", "/shops/my-proposes")
+                                "/shops/apply-close", "/shops/my-proposes",
+                                "/shops/add-item")
                         .hasRole("CEO")
                         // 내 프로필 확인
                         .requestMatchers("/users/my-profile")
