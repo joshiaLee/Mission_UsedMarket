@@ -102,6 +102,7 @@ public class AdminController {
         // Shop 오픈
         Shop shop = shopService.searchById(shop_id);
         shop.setStatus(Status.OPEN);
+
         shopService.join(shop);
 
 

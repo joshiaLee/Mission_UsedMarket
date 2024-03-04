@@ -1,12 +1,17 @@
 package com.example.market.service;
 
+import com.example.market.dto.ShopDto;
 import com.example.market.entity.Shop;
+import com.example.market.enums.Category;
 import com.example.market.repo.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,5 +32,21 @@ public class ShopService {
         return shopRepository.findByUserEntityId(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
+    }
+
+    public List<ShopDto> searchAll(){
+        return shopRepository
+                .findAllByOrderByRecentTransactionDesc()
+                .stream()
+                .map(ShopDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public List<ShopDto> searchAllByNameAndCategory(String name, Category category){
+        return shopRepository
+                .findAllByNameAndCategoryOrderByRecentTransactionDesc(name, category)
+                .stream()
+                .map(ShopDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

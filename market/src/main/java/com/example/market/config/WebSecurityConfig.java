@@ -71,6 +71,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/user-role", "/users/item-list",
                                 "/users/delete-item/{item_id}", "/users/update-view/{item_id}",
                                 "/users/update-item/{item_id}", "/users/delete-item-image/{image_id}",
+                                "/users/shops-list", "/users/shops-search",
                                 "/propose/{item_id}", "/propose/received-list",
                                 "/propose/sent-list", "/propose/admit/{propose_id}",
                                 "/propose/reject/{propose_id}", "/propose/admit-list",

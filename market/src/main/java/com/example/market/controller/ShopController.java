@@ -123,8 +123,6 @@ public class ShopController {
         }
 
 
-
-
         String username = authFacade.getAuth().getName();
         UserEntity userEntity = userService.searchByUsername(username);
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());

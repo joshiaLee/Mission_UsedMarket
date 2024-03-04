@@ -1,13 +1,16 @@
 package com.example.market.controller;
 
+import com.example.market.dto.ShopDto;
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.UserEntity;
+import com.example.market.enums.Category;
 import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.dto.UserDto;
 import com.example.market.dto.CustomUserDetails;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
+import com.example.market.service.ShopService;
 import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -32,6 +36,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationFacade authFacade;
     private final ImageRepository imageRepository;
+    private final ShopService shopService;
 
     // 홈 화면 모든 이용자 사용가능
     @GetMapping("/home")
@@ -174,6 +179,26 @@ public class UserController {
 
         return "redirect:/users/home";
     }
+
+    // 모든 쇼핑몰 조회, 최근 거래한 순서
+    @GetMapping("/shops-list")
+    public List<ShopDto> getAllShops(){
+        return shopService.searchAll();
+    }
+
+    // 이름, 카테고리로 쇼핑몰 검색
+    // /users/shops-search?name=철수&category=Electronics
+    @GetMapping("/shops-search")
+    public List<ShopDto> searchShops(
+            @RequestParam("name")
+            String name,
+            @RequestParam("category")
+            Category category
+    ){
+        return shopService.searchAllByNameAndCategory(name, category);
+    }
+
+
 
 
 
