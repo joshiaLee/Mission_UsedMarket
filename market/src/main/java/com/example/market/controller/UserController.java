@@ -212,9 +212,13 @@ public class UserController {
             @RequestBody
             PurchaseProposeDto proposeDto
     ){
+        String username = authFacade.getAuth().getName();
+        UserEntity userEntity = service.searchByUsername(username);
+
         PurchasePropose newPropose = PurchasePropose.builder()
                 .itemId(proposeDto.getItemId())
                 .shopId(proposeDto.getShopId())
+                .userId(userEntity.getId())
                 .quantity(proposeDto.getQuantity())
                 .status(Status.PROCEEDING)
                 .build();

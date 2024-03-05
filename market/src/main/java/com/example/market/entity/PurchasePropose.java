@@ -20,6 +20,8 @@ public class PurchasePropose {
     @Setter
     private Long shopId;
     @Setter
+    private Long userId;
+    @Setter
     private Integer quantity;
     @Setter
     @Enumerated(EnumType.STRING)
@@ -30,6 +32,7 @@ public class PurchasePropose {
                 .id(proposeDto.getId())
                 .itemId(proposeDto.getItemId())
                 .shopId(proposeDto.getShopId())
+                .userId(proposeDto.getUserId())
                 .quantity(proposeDto.getQuantity())
                 .status(proposeDto.getStatus())
                 .build();

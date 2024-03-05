@@ -14,6 +14,7 @@ public class PurchaseProposeDto {
     private Long id;
     private Long itemId;
     private Long shopId;
+    private Long userId;
     private Integer quantity;
     private Status status;
 
@@ -22,6 +23,7 @@ public class PurchaseProposeDto {
                 .id(propose.getId())
                 .itemId(propose.getItemId())
                 .shopId(propose.getShopId())
+                .userId(propose.getUserId())
                 .quantity(propose.getQuantity())
                 .status(propose.getStatus())
                 .build();
