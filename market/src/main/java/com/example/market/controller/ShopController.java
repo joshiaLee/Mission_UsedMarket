@@ -166,6 +166,7 @@ public class ShopController {
 
         // 구매 제안 최종 승인
         LocalDateTime now = LocalDateTime.now();
+
         purchasePropose.setStatus(Status.ADMITTED);
         shop.setRecentTransaction(now);
 

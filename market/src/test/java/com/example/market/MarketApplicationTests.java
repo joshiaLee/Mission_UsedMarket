@@ -1,22 +1,27 @@
 package com.example.market;
 
+import com.example.market.entity.Shop;
+import com.example.market.enums.Status;
+import com.example.market.repo.ShopRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @SpringBootTest
 class MarketApplicationTests {
-
+	@Autowired
+	private ShopRepository shopRepository;
 	@Test
 	void contextLoads() {
-		LocalDateTime currentDateTime = LocalDateTime.now();
+		Shop shop = Shop.builder()
+				.name("test")
+				.status(Status.OPEN)
+				.recentTransaction(LocalDateTime.now()) // Directly set the current LocalDateTime
+				.build();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		String formattedDateTime = currentDateTime.format(formatter);
-
-		System.out.println("시간: " + formattedDateTime);
+		shopRepository.save(shop);
 	}
 
 }
