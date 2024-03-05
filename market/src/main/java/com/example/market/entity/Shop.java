@@ -34,6 +34,7 @@ public class Shop {
     @Enumerated(EnumType.STRING)
     private Status status;
     @Setter
+    @Column(name = "recent_transaction", columnDefinition = "TIMESTAMP")
     private LocalDateTime recentTransaction;
     public static ShopDto fromDto(ShopDto shopDto){
         return ShopDto.builder()

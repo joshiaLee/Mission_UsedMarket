@@ -45,7 +45,7 @@ public class ShopService {
 
     public List<ShopDto> searchAllByNameAndCategory(String name, Category category, Status status){
         return shopRepository
-                .findAllByNameAndCategoryAndStatusOrderByRecentTransactionDesc(name, category, status)
+                .findAllByNameContainingAndCategoryAndStatusOrderByRecentTransactionDesc(name, category, status)
                 .stream()
                 .map(ShopDto::fromEntity)
                 .collect(Collectors.toList());

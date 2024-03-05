@@ -13,7 +13,8 @@ public interface ShopRepository extends JpaRepository<Shop, Long>  {
 
     List<Shop> findAllByOrderByRecentTransactionDesc();
 
-    List<Shop> findAllByNameAndCategoryAndStatusOrderByRecentTransactionDesc(String name, Category category, Status status);
+    List<Shop> findAllByNameContainingAndCategoryAndStatusOrderByRecentTransactionDesc(String name, Category category, Status status);
+
 
 
 }

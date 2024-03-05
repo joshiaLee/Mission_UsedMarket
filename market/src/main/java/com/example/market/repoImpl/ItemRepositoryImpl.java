@@ -25,6 +25,8 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                         item.status.eq(Status.SALE),
                         item.shop.id.isNotNull(),
                         item.shop.status.eq(Status.OPEN)
-                ).fetch();
+                )
+                .orderBy(item.shop.recentTransaction.desc())
+                .fetch();
     }
 }
