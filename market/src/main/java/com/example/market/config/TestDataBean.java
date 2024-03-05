@@ -15,17 +15,6 @@ public class TestDataBean {
     ){
 
         service.createUser(UserEntity.builder()
-                        .username("user")
-                        .password(passwordEncoder.encode("password"))
-                        .nickname("짱구")
-                        .name("user1")
-                        .age(18)
-                        .email("user1@gmail.com")
-                        .phone("01012345678")
-                        .authorities("ROLE_USER")
-                        .build());
-
-        service.createUser(UserEntity.builder()
                 .username("admin")
                 .password(passwordEncoder.encode("password"))
                 .nickname("철수")
@@ -36,63 +25,20 @@ public class TestDataBean {
                 .authorities("ROLE_ADMIN")
                 .build());
 
-        service.createUser(UserEntity.builder()
-                .username("이강선")
-                .password(passwordEncoder.encode("password"))
-                .nickname("강마에")
-                .name("user2")
-                .age(28)
-                .email("user2@gmail.com")
-                .phone("01012345678")
-                .authorities("ROLE_USER")
-                .registrationNumber("1234")
-                .status(Status.PROCEEDING)
-                .build());
-
-        service.createUser(UserEntity.builder()
-                .username("당근")
-                .password(passwordEncoder.encode("password"))
-                .nickname("당근당근")
-                .name("user3")
-                .age(20)
-                .email("user3@gmail.com")
-                .phone("01012345678")
-                .authorities("ROLE_USER")
-                .registrationNumber("12345")
-                .status(Status.PROCEEDING)
-                .build());
-
-        service.createUser(UserEntity.builder()
-                .username("김철수")
-                .password(passwordEncoder.encode("password"))
-                .nickname("당")
-                .name("user4")
-                .age(20)
-                .email("user3@gmail.com")
-                .phone("01012345678")
-                .authorities("ROLE_USER")
-                .registrationNumber("1a45")
-                .status(Status.PROCEEDING)
-                .build());
-
-        service.createUser(UserEntity.builder()
-                .username("유리")
-                .password(passwordEncoder.encode("password"))
-                .nickname("당리")
-                .name("user5")
-                .age(20)
-                .email("user3@gmail.com")
-                .phone("01012345678")
-                .authorities("ROLE_USER")
-                .registrationNumber("1234zz5")
-                .status(Status.PROCEEDING)
-                .build());
-
-        service.createUser(UserEntity.builder()
-                .username("비활성")
-                .password(passwordEncoder.encode("password"))
-                .authorities("ROLE_UNACTIVATED")
-                .build());
+        for (int i = 1; i <= 49; i++) {
+            service.createUser(UserEntity.builder()
+                    .username("user" + i)
+                    .password(passwordEncoder.encode("password"))
+                    .nickname("user" + i)
+                    .name("user" + i)
+                    .age(28)
+                    .email("user" + i + "@gmail.com")
+                    .phone(String.valueOf(i))
+                    .authorities("ROLE_CEO")
+                    .registrationNumber(String.valueOf(i))
+                    .status(Status.ADMITTED)
+                    .build());
+        }
 
 
     }
