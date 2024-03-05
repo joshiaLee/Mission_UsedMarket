@@ -18,10 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -45,33 +43,22 @@ public class UserController {
     // 홈 화면 모든 이용자 사용가능
     @GetMapping("/home")
     public String home(){
-        log.info(SecurityContextHolder.getContext().getAuthentication().getName());
-        log.info(authFacade.getAuth().getName());
-        return "index";
+        return authFacade.getAuth().getName();
     }
 
-    // 로그인 화면
-    @GetMapping("/login")
-    public String loginForm(){
-        return "login-form";
-    }
 
     // 내 프로필 화면
     @GetMapping("/my-profile")
-    public String myProfile(
+    public UserDto myProfile(
     ){
-        return "my-profile";
+        String username = authFacade.getAuth().getName();
+        return UserDto.fromEntity(service.searchByUsername(username));
     }
 
-    // 회원 가입 화면
-    @GetMapping("/register")
-    public String signUpForm(){
-        return "register-form";
-    }
 
     // 회원가입
     @PostMapping("/register")
-    public String signUpRequest(
+    public UserDto signUpRequest(
             @RequestBody
             UserDto userDto
     ){
@@ -86,14 +73,14 @@ public class UserController {
         UserEntity userEntity = UserEntity.fromUserDto(userDto);
         userEntity.setAuthorities("ROLE_UNACTIVATED");
 
-        service.createUser(userEntity);
 
-        return "ok";
+
+        return UserDto.fromEntity(service.createUser(userEntity));
     }
 
     // 추가정보 기입
     @PostMapping("/add-info")
-    public String signUpAdd(
+    public UserDto signUpAdd(
             @RequestBody
             UserDto userDto,
             Authentication authentication
@@ -127,15 +114,11 @@ public class UserController {
         // 승급(비활성 -> 일반)
         userEntity.setAuthorities("ROLE_USER");
 
-
-
-        service.updateUser(userEntity);
-
-        return "ok";
+        return UserDto.fromEntity(service.updateUser(userEntity));
     }
 
     // 프로필 사진 추가
-    @PostMapping("/add-image") String addImage(
+    @PostMapping("/add-image") ImageDto addImage(
             MultipartFile file,
             Authentication authentication
     ) throws IOException {
@@ -149,14 +132,14 @@ public class UserController {
 
         // ImageEntity 저장
         ImageEntity imageEntity = ImageFacade.AssociatedImage(userEntity, file);
-        imageRepository.save(imageEntity);
 
-        return "ok";
+
+        return ImageDto.fromEntity(imageRepository.save(imageEntity));
     }
 
-    // 사엽자 등록 신
+    // 사엽자 등록 신청
     @PostMapping("/apply")
-    public String apply(
+    public UserDto apply(
         @RequestBody
         UserDto userDto,
         Authentication authentication
@@ -173,9 +156,7 @@ public class UserController {
         userEntity.setRegistrationNumber(userDto.getRegistrationNumber());
         userEntity.setStatus(Status.PROCEEDING);
 
-        service.updateUser(userEntity);
-
-        return "ok";
+        return UserDto.fromEntity(service.updateUser(userEntity));
     }
 
     // 모든 쇼핑몰 조회, 최근 거래한 순서

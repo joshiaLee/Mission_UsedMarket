@@ -61,11 +61,11 @@ public class UserService implements UserDetailsService {
 
 
     // create(entity) 용
-    public void createUser(UserEntity user) {
+    public UserEntity createUser(UserEntity user) {
         if(this.userExists(user.getUsername()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
     public boolean userExists(String username) {
         return userRepository.existsByUsername(username);
@@ -76,8 +76,8 @@ public class UserService implements UserDetailsService {
     // update
 
 
-    public void updateUser(UserEntity userEntity) {
-        userRepository.save(userEntity);
+    public UserEntity updateUser(UserEntity userEntity) {
+        return userRepository.save(userEntity);
     }
 
 

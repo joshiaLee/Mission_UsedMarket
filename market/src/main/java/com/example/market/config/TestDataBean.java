@@ -40,6 +40,11 @@ public class TestDataBean {
                     .build());
         }
 
+        service.createUser(UserEntity.builder()
+                .username("몽실")
+                .password(passwordEncoder.encode("password"))
+                .authorities("ROLE_UNACTIVATED")
+                .build());
 
     }
 }

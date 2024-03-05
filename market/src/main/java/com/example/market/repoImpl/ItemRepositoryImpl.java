@@ -22,6 +22,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom {
                 .where(
                         item.name.contains(name),
                         item.price.between(above, under),
+                        item.status.eq(Status.SALE),
                         item.shop.id.isNotNull(),
                         item.shop.status.eq(Status.OPEN)
                 ).fetch();
