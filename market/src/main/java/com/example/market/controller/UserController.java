@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
@@ -59,13 +59,7 @@ public class UserController {
     // 내 프로필 화면
     @GetMapping("/my-profile")
     public String myProfile(
-            Authentication authentication
     ){
-        log.info(authentication.getName());
-        log.info(((CustomUserDetails) authentication.getPrincipal()).getUsername());
-        log.info(((CustomUserDetails) authentication.getPrincipal()).getEmail());
-        log.info(((CustomUserDetails) authentication.getPrincipal()).getPassword());
-        log.info(((CustomUserDetails) authentication.getPrincipal()).getPhone());
         return "my-profile";
     }
 
@@ -94,7 +88,7 @@ public class UserController {
 
         service.createUser(userEntity);
 
-        return "redirect:/users/login";
+        return "ok";
     }
 
     // 추가정보 기입
@@ -137,7 +131,7 @@ public class UserController {
 
         service.updateUser(userEntity);
 
-        return "redirect:/users/home";
+        return "ok";
     }
 
     // 프로필 사진 추가
@@ -157,7 +151,7 @@ public class UserController {
         ImageEntity imageEntity = ImageFacade.AssociatedImage(userEntity, file);
         imageRepository.save(imageEntity);
 
-        return "redirect:/users/home";
+        return "ok";
     }
 
     // 사엽자 등록 신
@@ -181,7 +175,7 @@ public class UserController {
 
         service.updateUser(userEntity);
 
-        return "redirect:/users/home";
+        return "ok";
     }
 
     // 모든 쇼핑몰 조회, 최근 거래한 순서

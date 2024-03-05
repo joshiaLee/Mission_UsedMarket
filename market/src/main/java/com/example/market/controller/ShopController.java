@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -163,9 +165,13 @@ public class ShopController {
         // Transaction 로직 실행
         itemService.purchaseItem(purchasePropose.getItemId(), purchasePropose.getQuantity());
 
-        // 구매제안 최종 승인
+        // 구매 제안 최종 승인
+        LocalDateTime now = LocalDateTime.now();
         purchasePropose.setStatus(Status.ADMITTED);
+        shop.setRecentTransaction(now);
 
+        // 구매 시간 갱신
+        shopService.join(shop);
         return PurchaseProposeDto.fromEntity(proposeService.join(purchasePropose));
         
         

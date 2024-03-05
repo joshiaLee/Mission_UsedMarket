@@ -93,5 +93,7 @@ public class TestDataBean {
                 .password(passwordEncoder.encode("password"))
                 .authorities("ROLE_UNACTIVATED")
                 .build());
+
+
     }
 }

@@ -22,6 +22,7 @@ public class PurchasePropose {
     @Setter
     private Integer quantity;
     @Setter
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     public static PurchasePropose fromEntity(PurchaseProposeDto proposeDto){
