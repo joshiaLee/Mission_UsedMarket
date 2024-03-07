@@ -9,7 +9,6 @@ import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
 import com.example.market.service.ItemService;
 import com.example.market.service.ProposeService;
-import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,6 @@ import java.util.List;
 @RequestMapping("/propose")
 public class ProposeController {
 
-    private final UserService service;
     private final ItemService itemService;
     private final ProposeService proposeService;
     private final AuthenticationFacade authFacade;
@@ -35,8 +33,7 @@ public class ProposeController {
             @PathVariable("item_id")
             Long item_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
         Item item = itemService.searchById(item_id);
         Long seller_id = item.getUserEntity().getId();
@@ -60,8 +57,7 @@ public class ProposeController {
     // 구매 제안 받은 목록
     @GetMapping("/received-list")
     public List<ProposeDto> getReceivedList(){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
         return proposeService.searchAllBySellerId(userEntity.getId());
 
@@ -70,8 +66,7 @@ public class ProposeController {
     // 구매 제안 보낸 목록
     @GetMapping("/sent-list")
     public List<ProposeDto> getSentList(){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
         return proposeService.searchAllByBuyerId(userEntity.getId());
 
@@ -83,8 +78,7 @@ public class ProposeController {
             @PathVariable("propose_id")
             Long propose_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Propose proposeEntity = proposeService.searchById(propose_id);
 
         if(!userEntity.getId().equals(proposeEntity.getSellerId()))
@@ -103,8 +97,7 @@ public class ProposeController {
             @PathVariable("propose_id")
             Long propose_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Propose proposeEntity = proposeService.searchById(propose_id);
 
         if(!userEntity.getId().equals(proposeEntity.getSellerId()))
@@ -120,8 +113,7 @@ public class ProposeController {
     // 구매 제안 물건중 승낙된 물건 조회
     @GetMapping("/admit-list")
     public List<ProposeDto> admitList(){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         return proposeService.searchAllAdmitted(userEntity.getId(), Status.ADMITTED);
 
     }
@@ -132,8 +124,7 @@ public class ProposeController {
             @PathVariable("propose_id")
             Long propose_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Propose proposeEntity = proposeService.searchById(propose_id);
 
         if(!userEntity.getId().equals(proposeEntity.getBuyerId()))

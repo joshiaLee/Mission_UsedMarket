@@ -11,12 +11,9 @@ import com.example.market.facade.AuthenticationFacade;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
 import com.example.market.service.ItemService;
-import com.example.market.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,7 +29,6 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
-    private final UserService service;
     private final ImageRepository imageRepository;
 
     private final AuthenticationFacade authFacade;
@@ -41,17 +37,15 @@ public class ItemController {
 
     // 새로운 아이템 등록
     @PostMapping("/add-item")
-    public String addItem(
+    public ItemDto addItem(
             MultipartFile[] files,
             @ModelAttribute
-            ItemDto itemDto,
-            Authentication authentication
+            ItemDto itemDto
     ) throws IOException {
         Item item = Item.fromDto(itemDto);
         log.info(itemDto.toString());
 
-        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
 
         item.setUserEntity(userEntity);
@@ -66,7 +60,7 @@ public class ItemController {
             }
         }
 
-        return "ok";
+        return ItemDto.fromEntity(savedItem);
     }
 
 
@@ -79,8 +73,8 @@ public class ItemController {
     // 내 아이템 조회
     @GetMapping("/my-items")
     public List<ItemDto> myItemList(){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+
+        UserEntity userEntity = authFacade.getUserEntity();
 
         return itemService.findAllItemByUserId(userEntity.getId());
     }
@@ -176,9 +170,7 @@ public class ItemController {
 
     // 어드민이 아닌데 삭제를 할경우 아이템의 주인 인지 확인
     private void checkUserAuthorizationForItem(Item item) {
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
-
+        UserEntity userEntity = authFacade.getUserEntity();
 
         if(!userEntity.getAuthorities().equals("ROLE_ADMIN") && !item.getUserEntity().getId().equals(userEntity.getId()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);

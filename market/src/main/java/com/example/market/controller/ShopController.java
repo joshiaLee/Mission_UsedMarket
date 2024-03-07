@@ -26,7 +26,6 @@ public class ShopController {
 
     private final AuthenticationFacade authFacade;
     private final ShopService shopService;
-    private final UserService userService;
     private final ItemService itemService;
     private final ImageRepository imageRepository;
     private final PurchaseProposeService proposeService;
@@ -39,8 +38,7 @@ public class ShopController {
             @RequestBody
             ShopDto shopDto
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
         Shop shop = shopService.searchByUserEntityId((userEntity.getId()));
 
@@ -58,8 +56,7 @@ public class ShopController {
     public ShopProposeDto openShop(
 
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId((userEntity.getId()));
 
         if(shop.getName() == null || shop.getIntroduction() == null || shop.getCategory() == null)
@@ -82,8 +79,7 @@ public class ShopController {
             @RequestBody
             MessageDto messageDto
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
         if(!shop.getStatus().equals(Status.OPEN))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "오픈된 쇼핑몰만 폐쇄요청을 할수 있습니다.");
@@ -100,8 +96,7 @@ public class ShopController {
     // 내 신청제안 보기
     @GetMapping("/my-proposes")
     public List<ShopProposeDto> getMyProposes(){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
 
         return shopProposeService.searchAllByShopId(shop.getId());
@@ -118,8 +113,7 @@ public class ShopController {
         }
 
 
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
 
         Item item = Item.fromDto(itemDto);
@@ -140,8 +134,7 @@ public class ShopController {
     // 쇼핑몰 구매제안 확인
     @GetMapping("/purchases-list")
     public List<PurchaseProposeDto> PurchaseList(){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
         
         return proposeService.searchAllByShopId(shop.getId());
@@ -153,8 +146,7 @@ public class ShopController {
             @PathVariable
             Long purchase_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
         
         PurchasePropose purchasePropose = proposeService.searchById(purchase_id);
@@ -183,8 +175,7 @@ public class ShopController {
             @PathVariable("purchase_id")
             Long purchase_id
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = userService.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
 
         PurchasePropose purchasePropose = proposeService.searchById(purchase_id);

@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,8 +49,8 @@ public class UserController {
     @GetMapping("/my-profile")
     public UserDto myProfile(
     ){
-        String username = authFacade.getAuth().getName();
-        return UserDto.fromEntity(service.searchByUsername(username));
+        UserEntity userEntity = authFacade.getUserEntity();
+        return UserDto.fromEntity(userEntity);
     }
 
 
@@ -82,8 +80,7 @@ public class UserController {
     @PostMapping("/add-info")
     public UserDto signUpAdd(
             @RequestBody
-            UserDto userDto,
-            Authentication authentication
+            UserDto userDto
     )  {
         boolean isValid = StringUtils.isNotBlank(userDto.getNickname()) &&
                 StringUtils.isNotBlank(userDto.getName()) &&
@@ -96,12 +93,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "모든 데이터를 입력해야 합니다.");
         }
 
-        // 접속자 정보
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-        // 엔티티 조회
-        String username = userDetails.getUsername();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
 
         userEntity.setNickname(userDto.getNickname());
@@ -119,16 +111,13 @@ public class UserController {
 
     // 프로필 사진 추가
     @PostMapping("/add-image") ImageDto addImage(
-            MultipartFile file,
-            Authentication authentication
+            MultipartFile file
     ) throws IOException {
         if (file == null || file.isEmpty())
             throw new IOException("이미지 파일이 없습니다.");
 
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
         // ImageEntity 저장
         ImageEntity imageEntity = ImageFacade.AssociatedImage(userEntity, file);
@@ -141,18 +130,15 @@ public class UserController {
     @PostMapping("/apply")
     public UserDto apply(
         @RequestBody
-        UserDto userDto,
-        Authentication authentication
+        UserDto userDto
     ){
        if(!StringUtils.isNotBlank(userDto.getRegistrationNumber())) {
            log.info("데이터 오류");
            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 사업자 번호");
        }
 
-        // 접속자가 누구인지
-        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-        UserEntity userEntity = service.searchByUsername(username);
-        
+        UserEntity userEntity = authFacade.getUserEntity();
+
         userEntity.setRegistrationNumber(userDto.getRegistrationNumber());
         userEntity.setStatus(Status.PROCEEDING);
 
@@ -212,8 +198,7 @@ public class UserController {
             @RequestBody
             PurchaseProposeDto proposeDto
     ){
-        String username = authFacade.getAuth().getName();
-        UserEntity userEntity = service.searchByUsername(username);
+        UserEntity userEntity = authFacade.getUserEntity();
 
         PurchasePropose newPropose = PurchasePropose.builder()
                 .itemId(proposeDto.getItemId())
