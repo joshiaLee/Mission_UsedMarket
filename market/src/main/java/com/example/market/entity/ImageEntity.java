@@ -30,8 +30,11 @@ public class ImageEntity {
         this.storeFileName = storeFileName;
         if(objectEntity instanceof UserEntity)
             this.userEntity = (UserEntity) objectEntity;
+
+        // 연관관계 편의 메서드
         if(objectEntity instanceof Item) {
             this.item = (Item) objectEntity;
+            item.getImageEntities().add(this);
         }
     }
 

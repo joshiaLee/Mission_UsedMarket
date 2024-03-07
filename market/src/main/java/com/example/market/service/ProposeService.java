@@ -30,17 +30,26 @@ public class ProposeService {
     }
 
     public List<ProposeDto> searchAllBySellerId(Long sellerId){
-        List<Propose> proposeList = proposeRepository.findAllBySellerId(sellerId);
-        return proposeList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
+        return proposeRepository
+                .findAllBySellerId(sellerId)
+                .stream()
+                .map(ProposeDto::fromEntity)
+                .collect(Collectors.toList());
     }
     public List<ProposeDto> searchAllByBuyerId(Long buyerId){
-        List<Propose> proposeList = proposeRepository.findAllByBuyerId(buyerId);
-        return proposeList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
+        return proposeRepository
+                .findAllByBuyerId(buyerId)
+                .stream()
+                .map(ProposeDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public List<ProposeDto> searchAllAdmitted(Long buyerId, Status status){
-        List<Propose> admittedList = proposeRepository.findAllByBuyerIdAndStatus(buyerId, status);
-        return admittedList.stream().map(ProposeDto::fromEntity).collect(Collectors.toList());
+        return proposeRepository
+                .findAllByBuyerIdAndStatus(buyerId, status)
+                .stream()
+                .map(ProposeDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public List<Propose> searchAllByItemId(Long itemId){

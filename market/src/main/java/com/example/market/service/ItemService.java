@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ItemService {
     private final ItemRepository itemRepository;
 
-    @Transactional(readOnly = false)
+    @Transactional
     public Item join(Item item){
         return itemRepository.save(item);
     }
@@ -50,7 +50,7 @@ public class ItemService {
         );
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteItem(Long id){
         itemRepository.deleteById(id);
     }
@@ -59,14 +59,14 @@ public class ItemService {
         return itemRepository.findAllByNameAndPrice(name, above, under);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional
     public Item purchaseItem(Long itemId, Integer quantity){
         Item item = searchById(itemId);
         if(item.getStock() < quantity || item.getStatus().equals(Status.SOLD))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 매진
-        if(item.getStock() == quantity){
+        if(item.getStock().equals(quantity)){
             item.setStock(0);
             item.setStatus(Status.SOLD);
         }
