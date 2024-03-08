@@ -4,9 +4,6 @@ import com.example.market.dto.MessageDto;
 import com.example.market.dto.ShopDto;
 import com.example.market.dto.ShopProposeDto;
 import com.example.market.dto.UserDto;
-import com.example.market.entity.Shop;
-import com.example.market.entity.ShopPropose;
-import com.example.market.entity.UserEntity;
 import com.example.market.enums.Status;
 import com.example.market.service.ShopProposeService;
 import com.example.market.service.ShopService;
@@ -33,40 +30,20 @@ public class AdminController {
 
     // 사업자 승인
     @PutMapping("/apply-admit/{id}")
-    public String applyAdmit(
+    public ShopDto applyAdmit(
             @PathVariable("id") Long id){
-
-
-        UserEntity userEntity = userService.searchById(id);
-
-        userEntity.setAuthorities("ROLE_CEO");
-        userEntity.setStatus(Status.ADMITTED);
-
-        // 사업자 승인과 동시에 준비중인 쇼핑몰 개설
-        Shop newShop = Shop.builder()
-                .userEntity(userEntity)
-                .status(Status.PREPARING)
-                .build();
-
-        shopService.join(newShop);
-
-
-        userService.updateUser(userEntity);
-
-        return "admitted";
+        // 사업자 승인
+        userService.approveBusinessApplication(id);
+        // 승인과 동시에 쇼핑몰 개설됨
+        return shopService.createShopForApprovedUser(id);
     }
 
     // 사업자 거절
     @PutMapping("/apply-reject/{id}")
-    public String applyReject(
+    public UserDto applyReject(
             @PathVariable("id") Long id){
 
-        UserEntity userEntity = userService.searchById(id);
-
-        userEntity.setStatus(Status.REJECTED);
-        userService.updateUser(userEntity);
-
-        return "rejected";
+        return userService.rejectBusinessApplication(id);
     }
 
     // 쇼핑몰 신청 리스트 확인
@@ -86,28 +63,12 @@ public class AdminController {
     }
 
     // 쇼핑몰 허가
-
     @PutMapping("/admit/{propose_id}")
     public ShopProposeDto admitShop(
             @PathVariable
             Long propose_id
     ){
-
-        // Propose 승낙
-        ShopPropose shopPropose = shopProposeService.searchById(propose_id);
-        shopPropose.setStatus(Status.ADMITTED);
-
-        Long shop_id = shopPropose.getShopId();
-
-        // Shop 오픈
-        Shop shop = shopService.searchById(shop_id);
-        shop.setStatus(Status.OPEN);
-
-        shopService.join(shop);
-
-
-
-        return ShopProposeDto.fromEntity(shopProposeService.join(shopPropose));
+        return shopProposeService.approveShopProposal(propose_id);
     }
 
     // 쇼핑몰 거절 (이유 명시)
@@ -118,12 +79,7 @@ public class AdminController {
             @RequestBody
             MessageDto messageDto
     ){
-        ShopPropose shopPropose = shopProposeService.searchById(propose_id);
-
-        shopPropose.setStatus(Status.REJECTED);
-        shopPropose.setMessage(messageDto.getMessage());
-
-        return ShopProposeDto.fromEntity(shopProposeService.join(shopPropose));
+        return shopProposeService.rejectShopProposal(propose_id, messageDto.getMessage());
     }
 
     // 쇼핑몰 폐쇄 요청 조회
@@ -135,21 +91,11 @@ public class AdminController {
 
     // 쇼핑몰 폐쇄
     @PutMapping("/closing-shops/{propose_id}")
-    public ShopDto closeShop(
+    public ShopProposeDto closeShop(
             @PathVariable
             Long propose_id
     ){
-        ShopPropose shopPropose = shopProposeService.searchById(propose_id);
-        shopPropose.setStatus(Status.ADMITTED);
-        shopProposeService.join(shopPropose);
-
-        Shop shop = shopService.searchById(shopPropose.getShopId());
-        shop.setStatus(Status.CLOSED);
-
-        return ShopDto.fromEntity(shopService.join(shop));
+        return shopProposeService.closeShop(propose_id);
     }
-
-
-
 
 }

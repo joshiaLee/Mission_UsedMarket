@@ -81,6 +81,23 @@ public class UserService implements UserDetailsService {
     }
 
 
+    // 사업자 승인
+    public UserDto approveBusinessApplication(Long userId) {
+        UserEntity userEntity = searchById(userId);
+        userEntity.setAuthorities("ROLE_CEO");
+        userEntity.setStatus(Status.ADMITTED);
+        return UserDto.fromEntity(updateUser(userEntity));
+    }
+
+    // 사업자 거절
+
+    public UserDto rejectBusinessApplication(Long userId) {
+        UserEntity userEntity = searchById(userId);
+        userEntity.setStatus(Status.REJECTED);
+        return UserDto.fromEntity(updateUser(userEntity));
+    }
+
+
     // delete
     public void deleteUser(String username) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);

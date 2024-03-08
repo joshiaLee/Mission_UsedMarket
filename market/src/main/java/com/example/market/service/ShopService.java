@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.dto.ShopDto;
 import com.example.market.entity.Shop;
+import com.example.market.entity.UserEntity;
 import com.example.market.enums.Category;
 import com.example.market.enums.Status;
 import com.example.market.repo.ShopRepository;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class ShopService {
     private final ShopRepository shopRepository;
+    private final UserService userService;
 
     public Shop join(Shop shop){
         return shopRepository.save(shop);
@@ -49,5 +51,15 @@ public class ShopService {
                 .stream()
                 .map(ShopDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    // Shop 개설 로직
+    public ShopDto createShopForApprovedUser(Long userId) {
+        UserEntity userEntity = userService.searchById(userId); // userService는 ShopService 내에 주입되어야 함
+        Shop newShop = Shop.builder()
+                .userEntity(userEntity)
+                .status(Status.PREPARING)
+                .build();
+        return ShopDto.fromEntity(join(newShop));
     }
 }

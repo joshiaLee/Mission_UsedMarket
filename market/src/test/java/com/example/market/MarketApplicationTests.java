@@ -24,4 +24,9 @@ class MarketApplicationTests {
 		shopRepository.save(shop);
 	}
 
+	@Test
+	void test(){
+
+	}
+
 }
