@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
@@ -61,6 +63,7 @@ public class UserService implements UserDetailsService {
 
 
     // create(entity) 용
+    @Transactional
     public UserEntity createUser(UserEntity user) {
         if(this.userExists(user.getUsername()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -76,12 +79,14 @@ public class UserService implements UserDetailsService {
     // update
 
 
+    @Transactional
     public UserEntity updateUser(UserEntity userEntity) {
         return userRepository.save(userEntity);
     }
 
 
     // 사업자 승인
+    @Transactional
     public UserDto approveBusinessApplication(Long userId) {
         UserEntity userEntity = searchById(userId);
         userEntity.setAuthorities("ROLE_CEO");
@@ -90,7 +95,7 @@ public class UserService implements UserDetailsService {
     }
 
     // 사업자 거절
-
+    @Transactional
     public UserDto rejectBusinessApplication(Long userId) {
         UserEntity userEntity = searchById(userId);
         userEntity.setStatus(Status.REJECTED);
@@ -99,12 +104,14 @@ public class UserService implements UserDetailsService {
 
 
     // delete
+    @Transactional
     public void deleteUser(String username) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 
     }
 
     // changePassword
+    @Transactional
     public void changePassword(String oldPassword, String newPassword) {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }

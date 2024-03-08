@@ -4,6 +4,7 @@ import com.example.market.dto.MessageDto;
 import com.example.market.dto.ShopDto;
 import com.example.market.dto.ShopProposeDto;
 import com.example.market.dto.UserDto;
+import com.example.market.entity.ShopPropose;
 import com.example.market.enums.Status;
 import com.example.market.service.ShopProposeService;
 import com.example.market.service.ShopService;
@@ -68,7 +69,13 @@ public class AdminController {
             @PathVariable
             Long propose_id
     ){
-        return shopProposeService.approveShopProposal(propose_id);
+        ShopPropose shopPropose = shopProposeService.searchById(propose_id);
+        // 승인
+        ShopProposeDto shopProposeDto = shopProposeService.approveShopProposal(propose_id);
+        // 쇼핑몰은 오픈 상태로 바꾼다.
+        shopService.changeShopStatus(shopPropose.getShopId(), Status.OPEN);
+
+        return shopProposeDto;
     }
 
     // 쇼핑몰 거절 (이유 명시)
@@ -95,7 +102,12 @@ public class AdminController {
             @PathVariable
             Long propose_id
     ){
-        return shopProposeService.closeShop(propose_id);
+        ShopPropose shopPropose = shopProposeService.searchById(propose_id);
+        // 쇼핑몰 폐쇄 요청 수락 -> Closed
+        ShopProposeDto shopProposeDto = shopProposeService.closeShop(propose_id);
+        // 쇼핑몰 폐쇄
+        shopService.changeShopStatus(shopPropose.getShopId(), Status.CLOSED);
+        return shopProposeDto;
     }
 
 }

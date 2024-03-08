@@ -2,7 +2,6 @@ package com.example.market.service;
 
 import com.example.market.dto.ShopDto;
 import com.example.market.entity.Shop;
-import com.example.market.entity.UserEntity;
 import com.example.market.enums.Category;
 import com.example.market.enums.Status;
 import com.example.market.repo.ShopRepository;
@@ -10,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -18,10 +18,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class ShopService {
     private final ShopRepository shopRepository;
     private final UserService userService;
 
+
+    @Transactional
     public Shop join(Shop shop){
         return shopRepository.save(shop);
     }
@@ -54,12 +57,21 @@ public class ShopService {
     }
 
     // Shop 개설 로직
+    @Transactional
     public ShopDto createShopForApprovedUser(Long userId) {
-        UserEntity userEntity = userService.searchById(userId); // userService는 ShopService 내에 주입되어야 함
         Shop newShop = Shop.builder()
-                .userEntity(userEntity)
+                .userEntity(userService.searchById(userId))
                 .status(Status.PREPARING)
                 .build();
         return ShopDto.fromEntity(join(newShop));
     }
+
+    // Shop의 상태 변
+    @Transactional
+    public ShopDto changeShopStatus(Long shop_id, Status status){
+        Shop shop = searchById(shop_id);
+        shop.setStatus(status);
+        return ShopDto.fromEntity(join(shop));
+    }
+
 }
