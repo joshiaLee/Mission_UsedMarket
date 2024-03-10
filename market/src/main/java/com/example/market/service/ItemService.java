@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.dto.ItemDto;
 import com.example.market.entity.Item;
+import com.example.market.entity.UserEntity;
 import com.example.market.enums.Status;
 import com.example.market.repo.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,26 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ItemService {
     private final ItemRepository itemRepository;
+
+
+    @Transactional
+    public Item addItem(ItemDto itemDto, UserEntity userEntity){
+        Item item = Item.fromDto(itemDto);
+        item.setUserEntity(userEntity);
+        item.setStatus(Status.SALE);
+
+        return join(item);
+    }
+
+    @Transactional
+    public Item updateItem(Item item, ItemDto itemDto){
+        item.setName(itemDto.getName());
+        item.setContent(itemDto.getContent());
+        item.setPrice(itemDto.getPrice());
+
+        return join(item);
+    }
+
 
     @Transactional
     public Item join(Item item){

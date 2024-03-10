@@ -6,10 +6,8 @@ import com.example.market.dto.UpdateItemResponseDto;
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.Item;
 import com.example.market.entity.UserEntity;
-import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
-import com.example.market.facade.ImageFacade;
-import com.example.market.repo.ImageRepository;
+import com.example.market.service.ImageService;
 import com.example.market.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -29,7 +26,7 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
-    private final ImageRepository imageRepository;
+    private final ImageService imageService;
 
     private final AuthenticationFacade authFacade;
 
@@ -42,23 +39,14 @@ public class ItemController {
             @ModelAttribute
             ItemDto itemDto
     ) throws IOException {
-        Item item = Item.fromDto(itemDto);
-        log.info(itemDto.toString());
 
         UserEntity userEntity = authFacade.getUserEntity();
 
+        // 아이템 등록
+        Item savedItem = itemService.addItem(itemDto, userEntity);
 
-        item.setUserEntity(userEntity);
-        item.setStatus(Status.SALE);
-
-        Item savedItem = itemService.join(item);
-
-        if (files != null && files.length > 0){
-            for(MultipartFile file: files) {
-                ImageEntity imageEntity = ImageFacade.AssociatedImage(savedItem, file);
-                imageRepository.save(imageEntity);
-            }
-        }
+        // 이미지 등록
+        imageService.addImages(files, savedItem);
 
         return ItemDto.fromEntity(savedItem);
     }
@@ -107,10 +95,9 @@ public class ItemController {
 
 
         ItemDto itemDto = ItemDto.fromEntity(item);
-        List<ImageEntity> imageEntities = imageRepository.findAllByItemId(item_id);
-        List<ImageDto> imagesDto = imageEntities.stream().map(ImageDto::fromEntity).collect(Collectors.toList());
+        List<ImageDto> imageDtoS = imageService.searchAllImagesByItemId(item_id);
 
-        return new UpdateItemResponseDto(itemDto, imagesDto);
+        return new UpdateItemResponseDto(itemDto, imageDtoS);
     }
 
 
@@ -128,18 +115,9 @@ public class ItemController {
 
         checkUserAuthorizationForItem(item);
 
-        item.setName(itemDto.getName());
-        item.setContent(itemDto.getContent());
-        item.setPrice(itemDto.getPrice());
+        Item savedItem = itemService.updateItem(item, itemDto);
 
-        Item savedItem = itemService.join(item);
-
-        if (files != null && files.length > 0){
-            for(MultipartFile file: files) {
-                ImageEntity imageEntity = ImageFacade.AssociatedImage(savedItem, file);
-                imageRepository.save(imageEntity);
-            }
-        }
+        imageService.addImages(files, savedItem);
 
         return ItemDto.fromEntity(savedItem);
     }
@@ -150,15 +128,12 @@ public class ItemController {
             @PathVariable("image_id")
             Long image_id
     ){
-        ImageEntity imageEntity = imageRepository.findById(image_id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 이미지가 없습니다.")
-        );
 
-        Item item = imageEntity.getItem();
+        ImageEntity imageEntity = imageService.searchById(image_id);
 
-        checkUserAuthorizationForItem(item);
+        checkUserAuthorizationForItem(imageEntity.getItem());
 
-        imageRepository.deleteById(image_id);
+        imageService.deleteImage(image_id);
 
         return "image successfully deleted";
     }
