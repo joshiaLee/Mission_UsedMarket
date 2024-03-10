@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.dto.ItemDto;
 import com.example.market.entity.Item;
+import com.example.market.entity.Shop;
 import com.example.market.entity.UserEntity;
 import com.example.market.enums.Status;
 import com.example.market.repo.ItemRepository;
@@ -99,5 +100,12 @@ public class ItemService {
 
         return itemRepository.save(item);
 
+    }
+
+    public Item addShopItem(ItemDto itemDto, Shop shop) {
+        Item item = Item.fromDto(itemDto);
+        item.setShop(shop);
+        item.setStatus(Status.SALE);
+        return join(item);
     }
 }

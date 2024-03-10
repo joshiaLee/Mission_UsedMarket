@@ -2,6 +2,7 @@ package com.example.market.service;
 
 import com.example.market.dto.PurchaseProposeDto;
 import com.example.market.entity.PurchasePropose;
+import com.example.market.enums.Status;
 import com.example.market.repo.PurchaseProposeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,5 +34,11 @@ public class PurchaseProposeService {
                 .stream()
                 .map(PurchaseProposeDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public PurchaseProposeDto changeStatus(PurchasePropose purchasePropose, Status status) {
+        purchasePropose.setStatus(status);
+        return PurchaseProposeDto.fromEntity(join(purchasePropose));
+
     }
 }

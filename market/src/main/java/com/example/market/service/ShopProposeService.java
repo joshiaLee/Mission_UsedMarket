@@ -74,4 +74,24 @@ public class ShopProposeService {
 
         return ShopProposeDto.fromEntity(join(shopPropose));
     }
+
+
+
+    public ShopProposeDto openPropose(Long id) {
+        ShopPropose newPropose = ShopPropose.builder()
+                .shopId(id)
+                .status(Status.PROCEEDING)
+                .build();
+
+        return ShopProposeDto.fromEntity(join(newPropose));
+    }
+
+    public ShopProposeDto closePropose(Long id, String message) {
+        ShopPropose newPropose = ShopPropose.builder()
+                .shopId(id)
+                .message(message)
+                .status(Status.CLOSING)
+                .build();
+        return ShopProposeDto.fromEntity(join(newPropose));
+    }
 }

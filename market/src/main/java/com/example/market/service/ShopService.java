@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,7 @@ public class ShopService {
         return ShopDto.fromEntity(join(newShop));
     }
 
-    // Shop의 상태 변
+    // Shop의 상태 변경
     @Transactional
     public ShopDto changeShopStatus(Long shop_id, Status status){
         Shop shop = searchById(shop_id);
@@ -74,4 +75,16 @@ public class ShopService {
         return ShopDto.fromEntity(join(shop));
     }
 
+    public ShopDto update(Shop shop, ShopDto shopDto) {
+        shop.setName(shopDto.getName());
+        shop.setIntroduction(shopDto.getIntroduction());
+        shop.setCategory(shopDto.getCategory());
+        return ShopDto.fromEntity(join(shop));
+    }
+
+    public void changeRecent(Shop shop) {
+        LocalDateTime now = LocalDateTime.now();
+        shop.setRecentTransaction(now);
+        join(shop);
+    }
 }

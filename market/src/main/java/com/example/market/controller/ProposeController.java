@@ -115,7 +115,7 @@ public class ProposeController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 내역만 구매확정 할수 있습니다,");
 
 
-
+        // 구매 확정
         return proposeService.completePropose(proposeEntity);
 
     }

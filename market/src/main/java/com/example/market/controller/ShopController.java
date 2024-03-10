@@ -4,8 +4,6 @@ import com.example.market.dto.*;
 import com.example.market.entity.*;
 import com.example.market.enums.Status;
 import com.example.market.facade.AuthenticationFacade;
-import com.example.market.facade.ImageFacade;
-import com.example.market.repo.ImageRepository;
 import com.example.market.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -27,8 +24,9 @@ public class ShopController {
     private final AuthenticationFacade authFacade;
     private final ShopService shopService;
     private final ItemService itemService;
-    private final ImageRepository imageRepository;
     private final PurchaseProposeService proposeService;
+    private final PurchaseProposeService purchaseProposeService;
+    private final ImageService imageService;
 
 
     private final ShopProposeService shopProposeService;
@@ -39,16 +37,9 @@ public class ShopController {
             ShopDto shopDto
     ){
         UserEntity userEntity = authFacade.getUserEntity();
-
         Shop shop = shopService.searchByUserEntityId((userEntity.getId()));
 
-        shop.setName(shopDto.getName());
-        shop.setIntroduction(shopDto.getIntroduction());
-        shop.setCategory(shopDto.getCategory());
-
-
-        return ShopDto.fromEntity(shopService.join(shop));
-
+        return shopService.update(shop, shopDto);
     }
 
     // 쇼핑몰 OPEN 요청
@@ -64,12 +55,7 @@ public class ShopController {
         if(shop.getStatus().equals(Status.OPEN))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 오픈된 쇼핑몰입니다.");
 
-        ShopPropose newPropose = ShopPropose.builder()
-                .shopId(shop.getId())
-                .status(Status.PROCEEDING)
-                .build();
-
-        return ShopProposeDto.fromEntity(shopProposeService.join(newPropose));
+        return shopProposeService.openPropose(shop.getId());
 
     }
 
@@ -84,13 +70,8 @@ public class ShopController {
         if(!shop.getStatus().equals(Status.OPEN))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "오픈된 쇼핑몰만 폐쇄요청을 할수 있습니다.");
 
-        ShopPropose newPropose = ShopPropose.builder()
-                .shopId(shop.getId())
-                .message(messageDto.getMessage())
-                .status(Status.CLOSING)
-                .build();
 
-        return ShopProposeDto.fromEntity(shopProposeService.join(newPropose));
+        return shopProposeService.closePropose(shop.getId(), messageDto.getMessage());
     }
 
     // 내 신청제안 보기
@@ -102,6 +83,7 @@ public class ShopController {
         return shopProposeService.searchAllByShopId(shop.getId());
     }
 
+    // 상점 아이템 추가
     @PostMapping("/add-item")
     public ItemDto addItem(
             MultipartFile[] files,
@@ -116,16 +98,9 @@ public class ShopController {
         UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
 
-        Item item = Item.fromDto(itemDto);
-        item.setShop(shop);
-        item.setStatus(Status.SALE);
+        Item savedItem = itemService.addShopItem(itemDto, shop);
 
-        Item savedItem = itemService.join(item);
-
-        for(MultipartFile file: files) {
-            ImageEntity imageEntity = ImageFacade.AssociatedImage(savedItem, file);
-            imageRepository.save(imageEntity);
-        }
+        imageService.addImages(files, savedItem);
 
         return ItemDto.fromEntity(savedItem);
 
@@ -148,24 +123,20 @@ public class ShopController {
     ){
         UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
-        
         PurchasePropose purchasePropose = proposeService.searchById(purchase_id);
+
+        // 해당 상점이 아니거나 구매제안의 Status 가 PROCEEDING 이 아닌 경우
         if(!shop.getId().equals(purchasePropose.getShopId()) || !purchasePropose.getStatus().equals(Status.PROCEEDING))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         
         // Transaction 로직 실행
         itemService.purchaseItem(purchasePropose.getItemId(), purchasePropose.getQuantity());
 
-        // 구매 제안 최종 승인
-        LocalDateTime now = LocalDateTime.now();
-
-        purchasePropose.setStatus(Status.ADMITTED);
-        shop.setRecentTransaction(now);
-
         // 구매 시간 갱신
-        shopService.join(shop);
-        return PurchaseProposeDto.fromEntity(proposeService.join(purchasePropose));
-        
+        shopService.changeRecent(shop);
+
+        // 구매 제안 최종 승인
+        return purchaseProposeService.changeStatus(purchasePropose, Status.ADMITTED);
         
     }
 
@@ -177,12 +148,11 @@ public class ShopController {
     ){
         UserEntity userEntity = authFacade.getUserEntity();
         Shop shop = shopService.searchByUserEntityId(userEntity.getId());
-
         PurchasePropose purchasePropose = proposeService.searchById(purchase_id);
-        if(!shop.getId().equals(purchasePropose.getShopId()))
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 
-        purchasePropose.setStatus(Status.REJECTED);
-        return PurchaseProposeDto.fromEntity(proposeService.join(purchasePropose));
+        if(!shop.getId().equals(purchasePropose.getShopId()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인상점의 물건만 거절할수 있습니다.");
+
+        return purchaseProposeService.changeStatus(purchasePropose, Status.REJECTED);
     }
 }
