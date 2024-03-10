@@ -134,7 +134,8 @@ public class UserService implements UserDetailsService {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
-
+    // 추가정보 기입
+    @Transactional
     public UserEntity addInfo(UserEntity userEntity, UserDto userDto) {
         userEntity.setNickname(userDto.getNickname());
         userEntity.setName(userDto.getName());
@@ -148,6 +149,8 @@ public class UserService implements UserDetailsService {
         return updateUser(userEntity);
     }
 
+    // 쇼핑몰 신
+    @Transactional
     public UserDto registerCEO(UserEntity userEntity, String registrationNumber) {
         userEntity.setRegistrationNumber(registrationNumber);
         userEntity.setStatus(Status.PROCEEDING);

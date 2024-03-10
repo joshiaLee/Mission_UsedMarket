@@ -56,6 +56,7 @@ public class ImageService {
         );
     }
 
+    @Transactional
     public ImageDto addImage(UserEntity userEntity, MultipartFile file) throws IOException {
         ImageEntity imageEntity = ImageFacade.AssociatedImage(userEntity, file);
         return ImageDto.fromEntity(imageRepository.save(imageEntity));

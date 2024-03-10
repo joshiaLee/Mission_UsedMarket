@@ -32,6 +32,7 @@ public class PurchaseProposeService {
         );
     }
 
+    // 쇼핑몰 아이디로 구매 제안 검색
     public List<PurchaseProposeDto> searchAllByShopId(Long id){
         return proposeRepository.findAllByShopId(id)
                 .stream()
@@ -39,6 +40,7 @@ public class PurchaseProposeService {
                 .collect(Collectors.toList());
     }
 
+    // 구매제안 상태 변경
     @Transactional
     public PurchaseProposeDto changeStatus(PurchasePropose purchasePropose, Status status) {
         purchasePropose.setStatus(status);
@@ -46,6 +48,8 @@ public class PurchaseProposeService {
 
     }
 
+    // 구매제안 생청
+    @Transactional
     public PurchaseProposeDto createPropose(PurchaseProposeDto proposeDto, Long id) {
         PurchasePropose newPropose = PurchasePropose.builder()
                 .itemId(proposeDto.getItemId())
