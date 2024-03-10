@@ -25,6 +25,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     // 이미지 등록
+    @Transactional
     public void addImages(MultipartFile[] files, Item savedItem) throws IOException {
         if (files != null && files.length > 0){
             for(MultipartFile file: files) {
@@ -42,6 +43,7 @@ public class ImageService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteImage(Long id){
         imageRepository.deleteById(id);
 

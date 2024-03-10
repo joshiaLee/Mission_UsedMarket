@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -16,9 +17,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class PurchaseProposeService {
     private final PurchaseProposeRepository proposeRepository;
 
+    @Transactional
     public PurchasePropose join(PurchasePropose propose){
         return proposeRepository.save(propose);
     }
@@ -36,6 +39,7 @@ public class PurchaseProposeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public PurchaseProposeDto changeStatus(PurchasePropose purchasePropose, Status status) {
         purchasePropose.setStatus(status);
         return PurchaseProposeDto.fromEntity(join(purchasePropose));

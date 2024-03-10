@@ -102,6 +102,7 @@ public class ItemService {
 
     }
 
+    @Transactional
     public Item addShopItem(ItemDto itemDto, Shop shop) {
         Item item = Item.fromDto(itemDto);
         item.setShop(shop);

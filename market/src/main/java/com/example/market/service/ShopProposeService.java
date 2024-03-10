@@ -77,6 +77,7 @@ public class ShopProposeService {
 
 
 
+    @Transactional
     public ShopProposeDto openPropose(Long id) {
         ShopPropose newPropose = ShopPropose.builder()
                 .shopId(id)
@@ -86,6 +87,7 @@ public class ShopProposeService {
         return ShopProposeDto.fromEntity(join(newPropose));
     }
 
+    @Transactional
     public ShopProposeDto closePropose(Long id, String message) {
         ShopPropose newPropose = ShopPropose.builder()
                 .shopId(id)

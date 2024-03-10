@@ -75,6 +75,7 @@ public class ShopService {
         return ShopDto.fromEntity(join(shop));
     }
 
+    @Transactional
     public ShopDto update(Shop shop, ShopDto shopDto) {
         shop.setName(shopDto.getName());
         shop.setIntroduction(shopDto.getIntroduction());
@@ -82,6 +83,7 @@ public class ShopService {
         return ShopDto.fromEntity(join(shop));
     }
 
+    @Transactional
     public void changeRecent(Shop shop) {
         LocalDateTime now = LocalDateTime.now();
         shop.setRecentTransaction(now);

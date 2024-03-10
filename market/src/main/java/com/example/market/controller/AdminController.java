@@ -107,6 +107,7 @@ public class AdminController {
         ShopProposeDto shopProposeDto = shopProposeService.closeShop(propose_id);
         // 쇼핑몰 폐쇄
         shopService.changeShopStatus(shopPropose.getShopId(), Status.CLOSED);
+
         return shopProposeDto;
     }
 
