@@ -1,6 +1,5 @@
 package com.example.market.controller;
 
-import com.example.market.dto.ItemDto;
 import com.example.market.dto.ProposeDto;
 import com.example.market.entity.Item;
 import com.example.market.entity.Propose;
@@ -29,7 +28,7 @@ public class ProposeController {
 
     // 구매 제안
     @PutMapping("/{item_id}")
-    public ItemDto proposeItem(
+    public ProposeDto proposeItem(
             @PathVariable("item_id")
             Long item_id
     ){
@@ -41,17 +40,8 @@ public class ProposeController {
         if(userEntity.getId().equals(seller_id))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인 상품을 구매할수 없습니다.");
 
-        Propose propose = Propose.builder()
-                .itemId(item_id)
-                .sellerId(seller_id)
-                .buyerId(userEntity.getId())
-                .status(Status.PROPOSING)
-                .build();
 
-        proposeService.join(propose);
-
-        return ItemDto.fromEntity(item);
-
+        return proposeService.purchasePropose(item_id, seller_id, userEntity.getId());
     }
 
     // 구매 제안 받은 목록
@@ -74,7 +64,7 @@ public class ProposeController {
 
     // 구매 제안 승인
     @PutMapping("/admit/{propose_id}")
-    public String admitPropose(
+    public ProposeDto admitPropose(
             @PathVariable("propose_id")
             Long propose_id
     ){
@@ -84,16 +74,14 @@ public class ProposeController {
         if(!userEntity.getId().equals(proposeEntity.getSellerId()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 요청만 승낙할수 있습니다,");
 
-        proposeEntity.setStatus(Status.ADMITTED);
 
-        proposeService.join(proposeEntity);
 
-        return "propose admitted";
+        return proposeService.changeStatus(proposeEntity, Status.ADMITTED);
     }
 
     // 구매 제안 거절
     @PutMapping("/reject/{propose_id}")
-    public String rejectPropose(
+    public ProposeDto rejectPropose(
             @PathVariable("propose_id")
             Long propose_id
     ){
@@ -103,11 +91,7 @@ public class ProposeController {
         if(!userEntity.getId().equals(proposeEntity.getSellerId()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 요청만 거절할수 있습니다,");
 
-        proposeEntity.setStatus(Status.REJECTED);
-
-        proposeService.join(proposeEntity);
-
-        return "propose rejected";
+        return proposeService.changeStatus(proposeEntity, Status.REJECTED);
     }
 
     // 구매 제안 물건중 승낙된 물건 조회
@@ -120,7 +104,7 @@ public class ProposeController {
 
     // 승낙된 물건 구매확정
     @PutMapping("/admit-list/{propose_id}")
-    public String confirmPropose(
+    public ProposeDto confirmPropose(
             @PathVariable("propose_id")
             Long propose_id
     ){
@@ -130,20 +114,9 @@ public class ProposeController {
         if(!userEntity.getId().equals(proposeEntity.getBuyerId()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 내역만 구매확정 할수 있습니다,");
 
-        // 해당 제안만 승낙하고 나머지는 모두 거절로 변경
-        List<Propose> RestOfPropose = proposeService.searchAllByItemId(proposeEntity.getItemId());
-        for (Propose propose : RestOfPropose) {
-            if(propose.equals(proposeEntity))
-                continue;
 
-            propose.setStatus(Status.REJECTED);
-            proposeService.join(propose);
-        }
 
-        proposeEntity.setStatus(Status.COMPLETED);
-        proposeService.join(proposeEntity);
-
-        return "propose successfully confirmed";
+        return proposeService.completePropose(proposeEntity);
 
     }
 }
