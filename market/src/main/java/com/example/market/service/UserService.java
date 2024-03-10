@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -62,14 +64,30 @@ public class UserService implements UserDetailsService {
 
 
 
-    // create(entity) 용
+    // create(From Dto) 용
     @Transactional
-    public UserEntity createUser(UserEntity user) {
-        if(this.userExists(user.getUsername()))
+    public UserEntity createUserFromDto(UserDto userDto) {
+        if(this.userExists(userDto.getUsername()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        return userRepository.save(user);
+        UserEntity userEntity = UserEntity.builder()
+                .username(userDto.getUsername())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .authorities("ROLE_UNACTIVATED")
+                .build();
+
+        return userRepository.save(userEntity);
     }
+
+    // 테스트 데이터 용
+    @Transactional
+    public UserEntity createUser(UserEntity userEntity) {
+        if(this.userExists(userEntity.getUsername()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+        return userRepository.save(userEntity);
+    }
+
     public boolean userExists(String username) {
         return userRepository.existsByUsername(username);
     }
@@ -117,4 +135,23 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public UserEntity addInfo(UserEntity userEntity, UserDto userDto) {
+        userEntity.setNickname(userDto.getNickname());
+        userEntity.setName(userDto.getName());
+        userEntity.setAge(userDto.getAge());
+        userEntity.setEmail(userDto.getEmail());
+        userEntity.setPhone(userDto.getPhone());
+
+        // 승급(비활성 -> 일반)
+        userEntity.setAuthorities("ROLE_USER");
+
+        return updateUser(userEntity);
+    }
+
+    public UserDto registerCEO(UserEntity userEntity, String registrationNumber) {
+        userEntity.setRegistrationNumber(registrationNumber);
+        userEntity.setStatus(Status.PROCEEDING);
+        return UserDto.fromEntity(updateUser(userEntity));
+
+    }
 }

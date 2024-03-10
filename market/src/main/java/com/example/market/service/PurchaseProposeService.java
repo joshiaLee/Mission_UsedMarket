@@ -45,4 +45,16 @@ public class PurchaseProposeService {
         return PurchaseProposeDto.fromEntity(join(purchasePropose));
 
     }
+
+    public PurchaseProposeDto createPropose(PurchaseProposeDto proposeDto, Long id) {
+        PurchasePropose newPropose = PurchasePropose.builder()
+                .itemId(proposeDto.getItemId())
+                .shopId(proposeDto.getShopId())
+                .userId(id)
+                .quantity(proposeDto.getQuantity())
+                .status(Status.PROCEEDING)
+                .build();
+
+        return PurchaseProposeDto.fromEntity(join(newPropose));
+    }
 }

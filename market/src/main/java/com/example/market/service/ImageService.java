@@ -3,6 +3,7 @@ package com.example.market.service;
 import com.example.market.dto.ImageDto;
 import com.example.market.entity.ImageEntity;
 import com.example.market.entity.Item;
+import com.example.market.entity.UserEntity;
 import com.example.market.facade.ImageFacade;
 import com.example.market.repo.ImageRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,4 +56,8 @@ public class ImageService {
         );
     }
 
+    public ImageDto addImage(UserEntity userEntity, MultipartFile file) throws IOException {
+        ImageEntity imageEntity = ImageFacade.AssociatedImage(userEntity, file);
+        return ImageDto.fromEntity(imageRepository.save(imageEntity));
+    }
 }
